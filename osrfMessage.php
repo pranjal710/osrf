@@ -15,7 +15,7 @@ public $service;
 public $__curl;
 public $server_result;
 
-    function __construct($x, $z, $y) // x=method, y=param, z=service
+    function __construct($x, $z, $y, $u="opensrf") // x=method, y=param, z=service, u=endpoint
     {
         if (is_string($x)) {
             $this->_method = $x;
@@ -29,6 +29,7 @@ public $server_result;
             $this->service = $z;
         }
 		$this->param = $y;
+		$this->endpoint = $u;
 		
     }
 	
@@ -72,8 +73,14 @@ $url4 = url_data1 ($this->_method, $this->param);
 return $url4;
     }
 	
-	function connection($endpoint, $data, $header)
+	
+	
+	
+	function send()
 {
+$endpoint = $this->endpoint;
+$data = $this->toArray();
+$header = $this->header();
 $url_post = 'http://'.$endpoint.'/osrf-http-translator';
  $this->__curl = curl_init();
  
@@ -99,4 +106,15 @@ echo curl_errno($this->curl);
  echo '</pre>';
 */
 }
+
+
+
+	
+/*
+echo curl_errno($this->curl); 
+ echo '<pre>';
+ print_r ($server_result);
+ echo '</pre>';
+*/
 }
+?>
