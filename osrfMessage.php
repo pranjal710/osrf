@@ -14,6 +14,7 @@ public $header;
 public $service;
 public $__curl;
 public $server_result;
+public $endpoint;
 
     function __construct($x, $z, $y, $u="opensrf") // x=method, y=param, z=service, u=endpoint
     {
