@@ -3,6 +3,8 @@
 
 */
 
+require_once('parse_result.php');
+
 class osrfMessage
 {
 public $ch;
@@ -99,7 +101,9 @@ $error = 'Curl error: ' . curl_error($this->__curl);
 
 return $error;
 }
-return $this->server_result;
+
+$res = new parse_response($this->server_result);
+return $res;
 /*
 echo curl_errno($this->curl); 
  echo '<pre>';
