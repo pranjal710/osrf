@@ -32,7 +32,7 @@ echo "Authentication Token : ". $response0->result."<br />";
 
 $seed = $response0->result;
 $password = md5($seed . md5($_POST['password']));
-echo $password."<br />";
+echo "<br /> Password : ".$password."<br />";
 
 $response1 = token($arr = array('None', $_POST['username'], $password, 'None'), $m = 'open-ils.auth.authenticate.complete', $s = 'open-ils.auth');
 echo "x-opensrf-thread : ".$response1->x_opensrf_thread."<br />";

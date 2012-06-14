@@ -3,7 +3,7 @@
 
 */
 
-require('parse_result.php');
+require_once('parse_result.php');
 
 class osrfMessage
 {
@@ -33,7 +33,7 @@ public $endpoint;
         }
 		$this->param = $y;
 		$this->endpoint = $u;
-		
+	//	$this->to = NULL;
     }
 	
 	function set_guid($guid)

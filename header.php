@@ -1,5 +1,5 @@
 <?php
-/*if ($this->to <> NULL)
+if ($this->to <> NULL)
 {
 $this->header = array(
 	'X-OpenSRF-to: '.$this->to,
@@ -7,7 +7,7 @@ $this->header = array(
 	'X-OpenSRF-thread: '.$this->get_guid()
 	);
 }
-else*/
+else
 {
 
 //$guid = guid();
