@@ -59,11 +59,9 @@ public $endpoint;
 	
 	function header()
 {
-if (empty($this->header))
-{
+global $global_to, $global_guid;
 require('header.php');
 return $this->header;
-}
 }
 
     function toArray()

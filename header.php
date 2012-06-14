@@ -1,10 +1,10 @@
 <?php
-if ($this->to <> NULL)
+if ($global_to)
 {
 $this->header = array(
-	'X-OpenSRF-to: '.$this->to,
+	'X-OpenSRF-to: '.$global_to,
 	'X-OpenSRF-xid: '.time(),
-	'X-OpenSRF-thread: '.$this->get_guid()
+	'X-OpenSRF-thread: '.$global_guid
 	);
 }
 else

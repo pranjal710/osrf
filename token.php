@@ -29,8 +29,8 @@ echo "</pre><HR />";
 	if ($response) 
 	{
 	$response->parse();
-$a->set_guid($response->x_opensrf_thread);
-$a->to = $response->x_opensrf_from;
+//$a->set_guid($response->x_opensrf_thread);
+//$a->to = $response->x_opensrf_from;
 echo "<pre>";
 print_r ($a->header);
 echo "</pre>";
