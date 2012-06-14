@@ -25,8 +25,6 @@ if ($flag = '1')
 $arr = array($_POST['username']);
 $m = 'open-ils.auth.authenticate.init';
 $s = 'open-ils.auth';
-require_once('osrfMessage.php');
-$b = new osrfMessage($m, $s, $arr, $endpoint);
 
 echo "Username : ".$_POST['username']."<br />Password : ".$_POST['password']."<br />";
 
