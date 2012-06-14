@@ -3,7 +3,7 @@
 
 */
 
-require_once('parse_result.php');
+require('parse_result.php');
 
 class osrfMessage
 {
@@ -59,16 +59,13 @@ public $endpoint;
 	
 	function header()
 {
-include_once ("header.php");
+if (empty($this->header))
+{
+require('header.php');
 return $this->header;
 }
-/*
-	function header($to , $guid)
-{
-
-
 }
-	*/
+
     function toArray()
     {
 include_once ("url1.php");
