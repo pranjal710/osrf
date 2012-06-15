@@ -47,7 +47,8 @@ $password = md5($seed . md5($_POST['password']));
 echo "<br /> Password : ".$password."<br />";
 
 
-$arr = array("workstation"=>'None', "username"=>$_POST['username'], "password"=>$seed, "type"=>'None'); 
+$arr = array("workstation"=>"None", "username"=>$_POST['username'], "password"=>$seed, "type"=>"None"); 
+print_r ($arr);
 $response1 = token($arr, $m = 'open-ils.auth.authenticate.complete', $s = 'open-ils.auth');
 echo "x-opensrf-thread : ".$response1->x_opensrf_thread."<br />";
 echo "x-opensrf-from : ".$response1->x_opensrf_from."<br />";//,$_POST['password']
