@@ -20,7 +20,7 @@ Password : <input type="password" name="password" value="" /><br />
 
 
 <?php
-if ($flag = '1')
+if ($flag == '1')
 {
 $arr = array($_POST['username']);
 $m = 'open-ils.auth.authenticate.init';
@@ -39,14 +39,16 @@ echo "Authentication Token : ". $response0->result."<br />";
 //echo "<br /><br /><br />To ".$b->to."<br />"; //works
 //echo "guid ".$b->guid."<br /><br /><br />";//works
 
-$global_to = $response0->x_opensrf_from;
-$global_guid = $response0->x_opensrf_thread;
+//$global_to = $response0->x_opensrf_from;
+//$global_guid = $response0->x_opensrf_thread;
 
 $seed = $response0->result;
 $password = md5($seed . md5($_POST['password']));
 echo "<br /> Password : ".$password."<br />";
 
-$response1 = token($arr = array('None', $_POST['username'], $password, 'None'), $m = 'open-ils.auth.authenticate.complete', $s = 'open-ils.auth');
+
+$arr = array("workstation"=>'None', "username"=>$_POST['username'], "password"=>$seed, "type"=>'None'); 
+$response1 = token($arr, $m = 'open-ils.auth.authenticate.complete', $s = 'open-ils.auth');
 echo "x-opensrf-thread : ".$response1->x_opensrf_thread."<br />";
 echo "x-opensrf-from : ".$response1->x_opensrf_from."<br />";//,$_POST['password']
 echo "Authentication Token : ". $response1->result."<br />";
