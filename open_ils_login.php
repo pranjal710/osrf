@@ -21,8 +21,7 @@ if ($login_response['result']['ilsevent']=='0')
 return $login_response['result']['payload']['authtoken'];
 }
 else
-return $response1;
-
+return $login_response['result'];
 /*
 $variables = get_object_vars($response1->result); 
 $keys = array_keys($variables);
