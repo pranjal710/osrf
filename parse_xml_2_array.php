@@ -40,18 +40,18 @@ $class_id = $arrXml['class'][$i]['@attributes']['id'];
 $inner = NULL;
 
 
-$field[$i] = array();
+$field[$class_id] = array();
 	for ($j= 0 ; $arrXml['class'][$i]['fields']['field'][$j]['@attributes']['name'] != NULL ; $j++)
 	{
 	//$arrXml['class'][$i]['@attributes']['id'][] =	$arrXml['class'][$i]['fields']['field'][$j]['@attributes']['name'];
 	//$field[$arrXml['class'][$i]['@attributes']['id']][] = $arrXml['class'][$i]['fields']['field'][$j]['@attributes']['name'];
-	$field[$i][] = $arrXml['class'][$i]['fields']['field'][$j]['@attributes']['name'];
+	$field[$class_id][] = $arrXml['class'][$i]['fields']['field'][$j]['@attributes']['name'];
 	}
 	
 	}
 	
 	
-echo "<pre>"; print_r ($class); echo "</pre> <br /><HR /><br />";
+//echo "<pre>"; print_r ($class); echo "</pre> <br /><HR /><br />";
 echo "<pre>"; print_r ($field); echo "</pre> <br />";
 
 ?>
