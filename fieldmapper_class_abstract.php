@@ -1,6 +1,6 @@
 <?php 
 abstract class fieldmapper_class
-   {
+	{
 		private $values = array();
 		function __set($field, $value) 
 			{
@@ -13,7 +13,11 @@ abstract class fieldmapper_class
 		function __get($field) 
 			{
 				if (in_array($field, $this->$values)) {
-					return $this->$values[$field];
+					if (isset($this->$values[$field])) {
+						return $this->$values[$field];
+					}
+					else return NULL;
+				}
 			}
 				else {
 					throw new Exception('fieldmapper class '.get_called_class().' has no '.$field.' . Invalid Field Parameter');
