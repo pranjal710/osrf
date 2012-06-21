@@ -18,7 +18,6 @@ abstract class fieldmapper_class
 					}
 					else return NULL;
 				}
-			}
 				else {
 					throw new Exception('fieldmapper class '.get_called_class().' has no '.$field.' . Invalid Field Parameter');
 				}
