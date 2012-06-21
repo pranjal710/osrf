@@ -10,7 +10,7 @@ if (in_array($field, $this->$properties))
 $this->values[$field] = $value;
 }
 else
-   throw new Exception('Invalid Field Parameter');
+   throw new Exception('fieldmapper class '.get_called_class().' has no '$field' . Invalid Field Parameter');
 }
 
 function __get($field) 
@@ -20,7 +20,7 @@ if (in_array($field, $this->$values)) {
         }
 else
 {
-      throw new Exception('Invalid Field Parameter');
+      throw new Exception('fieldmapper class '.get_called_class().' has no '$field' . Invalid Field Parameter');
 }
         /*
 $trace = debug_backtrace();
