@@ -5,17 +5,17 @@ private $values = array();
 
 function __set($field, $value) 
 {
-if (!(array_key_exists($field, $this->$properties)))
+if (in_array($field, $this->$properties))
 {
-   throw new Exception('Invalid Field Parameter');
+$this->values[$field] = $value;
 }
 else
-$this->values[$field] = $value;
+   throw new Exception('Invalid Field Parameter');
 }
 
 function __get($field) 
 {
-if (array_key_exists($field, $this->$values)) {
+if (in_array($field, $this->$values)) {
             return $this->$values[$field];
         }
 else
