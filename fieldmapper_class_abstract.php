@@ -23,5 +23,17 @@ abstract class fieldmapper_class
 				}
 			}
 
+		function encodeForOpenSRF() 
+			{
+				$a = '"__c" => "'.get_called_class().'",\n';
+				$b = '"__p" => array(';
+				for ($count = 0 ; $count < (count($this->properties)) ; $count++) {
+					$b = $b.'\n"'.$this->properties[$count].'",';
+				}
+				$b = substr($b , 0, -1);
+				$b = $b.'\n)';
+				$array_formed = 'array(\n'.$a.$b.'\n);';
+				return $array_formed;
+			}
 	}
 ?>
