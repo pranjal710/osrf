@@ -29,7 +29,8 @@ abstract class fieldmapper_class
 				$t['__c'] = get_called_class();
 				$t['__p'] = array();
 				for ($count = 0 ; $count < (count($this->properties)) ; $count++) {
-					$t['__p'][] = $this->properties[$count];
+					$key = $this->$properties[$count];
+					$t['__p'][] = $this->values[$key];
 				}
 				return $t;
 			}
