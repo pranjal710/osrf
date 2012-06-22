@@ -25,7 +25,7 @@ function objectsIntoArray($arrObjData, $arrSkipIndices = array())
 
 
 <?php
-$xmlUrl = "/openils/conf/fm_IDL.xml";
+$xmlUrl = "http://server/reports/fm_IDL.xml";
 $xmlStr = file_get_contents($xmlUrl);
 $xmlObj = simplexml_load_string($xmlStr);
 $arrXml = objectsIntoArray($xmlObj);
