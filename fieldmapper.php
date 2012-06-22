@@ -9,7 +9,7 @@ $stringData = "include (\"fieldmapper_class_abstract.php\"); \n ";
 fwrite($fh, $stringData);
 for($i=0 ; $class[$i] != NULL ; $i++) {
 	$id = NULL;
-	$stringData = "Class ".$class[$i]." extends fieldmapper_class{\nprivate \$properties = array(";
+	$stringData = "Class ".$class[$i]." extends fieldmapper_class{\nprotected \$_properties = array(";
 	$id = $class[$i];
 	$data = NULL;
 	fwrite($fh, $stringData);
