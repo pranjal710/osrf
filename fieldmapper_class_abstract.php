@@ -4,7 +4,7 @@ abstract class fieldmapper_class
 		private $values = array();
 		function __set($field, $value) 
 			{
-				if (in_array($field, $this->$properties)) {
+				if (in_array($field, $this->properties)) {
 					$this->values[$field] = $value;
 				}
 				else
@@ -12,9 +12,9 @@ abstract class fieldmapper_class
 			}
 		function __get($field) 
 			{
-				if (in_array($field, $this->$values)) {
-					if (isset($this->$values[$field])) {
-						return $this->$values[$field];
+				if (in_array($field, $this->values)) {
+					if (isset($this->values[$field])) {
+						return $this->values[$field];
 					}
 					else return NULL;
 				}
@@ -29,7 +29,7 @@ abstract class fieldmapper_class
 				$t['__c'] = get_called_class();
 				$t['__p'] = array();
 				for ($count = 0 ; $count < (count($this->properties)) ; $count++) {
-					$key = $this->$properties[$count];
+					$key = $this->properties[$count];
 					$t['__p'][] = $this->values[$key];
 				}
 				return $t;
