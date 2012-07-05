@@ -14,7 +14,7 @@ for($i=0 ; $class[$i] != NULL ; $i++) {
 	$data = NULL;
 	fwrite($fh, $stringData);
 	for($j=0 ; $field[$id][$j] != NULL ; $j++) {
-		$data = $data.'"'.$field[$id][$j].'", ';
+		$data = $data.'"'.$j.'" => \''.$field[$id][$j].'\', ';
 	}
 	$stringData = substr($data, 0, -2);
 	fwrite($fh, $stringData);
