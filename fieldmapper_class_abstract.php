@@ -3,14 +3,15 @@ abstract class fieldmapper_class
 	{
 		private $_values = array();
 		function __set($field, $value) 
-			{
-				if ($field == "_properties") {
-                    			$this->$field = $value;
-                		}
-                		else if (in_array($field, $this->_properties)) {
+			{ 
+				$flag = 1;
+				for ($x = 0 ; $this->_properties[$x] != NULL ; $x++) {
+					if ($this->_properties[$x] == $field) {
 					$this->_values[$field] = $value;
+					$flag = 2;
+					}
 				}
-				else
+				if ($flag == 1)
 					throw new Exception('fieldmapper class '.get_called_class().' has no '.$field.' . Invalid Field Parameter');
 			}
 		function __get($field) 
@@ -18,7 +19,7 @@ abstract class fieldmapper_class
 				if ($field == "_properties") {
 					return $this->$field;
 				}
-				else if (in_array($field, $this->_values)) {
+				else if (array_key_exists($field, $this->_values)) {
 					if (isset($this->_values[$field])) {
 						return $this->_values[$field];
 					}
@@ -36,6 +37,10 @@ abstract class fieldmapper_class
 				$t['__p'] = array();
 				for ($count = 0 ; $count < (count($this->_properties)) ; $count++) {
 					$key = $this->_properties[$count];
+					if (is_object($this->_values[$key])) {
+					$t['__p'][] = $this->_values[$key]->encodeForOpenSRF();
+					}
+					else
 					$t['__p'][] = $this->_values[$key];
 				}
 				return $t;
