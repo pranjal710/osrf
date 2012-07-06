@@ -5,7 +5,7 @@ $myFile = "classfieldmapper.php";
 $fh = fopen($myFile, 'w') or die("can't open file");
 $stringData = "<?php \n \n";
 fwrite($fh, $stringData);
-$stringData = "include (\"fieldmapper_class_abstract.php\"); \n ";
+$stringData = "include (\"./../../fieldmapper_class_abstract.php\"); \n ";
 fwrite($fh, $stringData);
 for($i=0 ; $class[$i] != NULL ; $i++) {
 	$id = NULL;
