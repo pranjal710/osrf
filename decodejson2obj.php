@@ -1,5 +1,5 @@
 <?php
-include ("stdclass_to_array.php");
+//include ("stdclass_to_array.php"); //ALready included in open_ils_login.php
 
 function decodejson2obj($json_obj) {
 	$json_obj_parsed = stdclass_to_array(json_decode($json_obj));

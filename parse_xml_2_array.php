@@ -25,7 +25,7 @@ function objectsIntoArray($arrObjData, $arrSkipIndices = array())
 
 
 <?php
-$xmlUrl = "http://server/reports/fm_IDL.xml";
+$xmlUrl = $ses->fm_IDL;
 $xmlStr = file_get_contents($xmlUrl);
 $xmlObj = simplexml_load_string($xmlStr);
 $arrXml = objectsIntoArray($xmlObj);
@@ -40,5 +40,4 @@ for ($i= 0 ; $arrXml['class'][$i]['@attributes']['id'] != NULL ; $i++) {
 		$field[$class_id][] = $arrXml['class'][$i]['fields']['field'][$j]['@attributes']['name'];
 	}
 }
-echo "<pre>"; print_r ($field); echo "</pre> <br />";
 ?>
