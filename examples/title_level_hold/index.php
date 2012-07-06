@@ -1,6 +1,6 @@
 <?php
 include ("OpenSRFSession.php");
-$ses = new OpenSRFSession("localhost"); // remembers server & loads fieldmapper.
+$ses = new OpenSRFSession("hostname"); // e.g.: localhost  remembers server & loads fieldmapper.
  
 include ("open_ils_login.php");
 include ("fieldmapper.php");
@@ -8,7 +8,7 @@ include ("classfieldmapper.php");
 include ("decodejson2obj.php");
 include ("is_open_ils_event.php");
 
-$authtoken = $ses->login('pranjal', 'prabhasH1');      ////  $t = Authentication token
+$authtoken = $ses->login('username', 'password');      ////  $t = Authentication token
 
 $hold = new ahr();
 $hold->target = 3;
