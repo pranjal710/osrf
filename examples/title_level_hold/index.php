@@ -4,7 +4,7 @@ $ses = new OpenSRFSession("hostname"); // e.g.: localhost  remembers server & lo
  
 include ("./../../open_ils_login.php");
 include ("./../../fieldmapper.php");
-include ("./../../classfieldmapper.php");
+include ("classfieldmapper.php");
 include ("./../../decodejson2obj.php");
 include ("./../../is_open_ils_event.php");
 
