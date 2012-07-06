@@ -1,12 +1,12 @@
 <?php
-include ("OpenSRFSession.php");
+include ("./../../OpenSRFSession.php");
 $ses = new OpenSRFSession("hostname"); // e.g.: localhost  remembers server & loads fieldmapper.
  
-include ("open_ils_login.php");
-include ("fieldmapper.php");
-include ("classfieldmapper.php");
-include ("decodejson2obj.php");
-include ("is_open_ils_event.php");
+include ("./../../open_ils_login.php");
+include ("./../../fieldmapper.php");
+include ("./../../classfieldmapper.php");
+include ("./../../decodejson2obj.php");
+include ("./../../is_open_ils_event.php");
 
 $authtoken = $ses->login('username', 'password');      ////  $t = Authentication token
 
