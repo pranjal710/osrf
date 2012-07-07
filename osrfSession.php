@@ -1,5 +1,5 @@
 <?php
-class OpenSRFSession
+class osrfSession
 {
 public $server;
 public $fm_IDL;
