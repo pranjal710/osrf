@@ -8,7 +8,7 @@ include ("classfieldmapper.php");
 include ("./../../decodejson2obj.php");
 include ("./../../is_open_ils_event.php");
 
-$authtoken = $ses->login('username', 'password');      ////  $t = Authentication token
+$authtoken = $ses->login('username', 'password');      ////  Authentication token
 
 $hold = new ahr();
 $hold->target = 3;
