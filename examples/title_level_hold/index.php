@@ -1,5 +1,5 @@
 <?php
-include ("./../../OpenSRFSession.php");
+include ("./../../osrfSession.php");
 $ses = new OpenSRFSession("hostname"); // e.g.: localhost  remembers server & loads fieldmapper.
  
 include ("./../../open_ils_login.php");
