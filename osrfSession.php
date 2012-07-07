@@ -29,7 +29,7 @@ function request($service, $method, $auth, $hold)
 	{
 		if(is_object($hold)) $hold = $hold->encodeForOpenSRF();
 		$arr = array ($auth, $hold);
-		$res = open_ils_simple_request($arr, "open-ils.circ.holds.create", "open-ils.circ");
+		$res = open_ils_simple_request($arr, $method, $service);
 		$new_obj = new osrfResponse($res);
 		return $new_obj;
 	} 
