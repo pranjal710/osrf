@@ -12,7 +12,7 @@ function __construct($u="localhost")
 
 function login($user, $pass)
 	{
-	return open_ils_login($user, $pass);
+	return open_ils_login($user, $pass, $this->server);
 	}
 	
 function checkhost()
@@ -29,7 +29,7 @@ function request($service, $method, $auth, $hold)
 	{
 		if(is_object($hold)) $hold = $hold->encodeForOpenSRF();
 		$arr = array ($auth, $hold);
-		$res = open_ils_simple_request($arr, $method, $service);
+		$res = open_ils_simple_request($arr, $method, $service, $this->server);
 		$new_obj = new osrfResponse($res);
 		return $new_obj;
 	} 
