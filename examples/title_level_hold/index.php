@@ -27,7 +27,7 @@ if ($ses->checkhost() == 200) {
 		} 
 		else echo "Placed hold successfully. ID is " . $response;
 	}
-	else echo "Check Username/password. Errors were encountered.";
+	else echo "Errors were encountered.";
 }
 else echo "Could not locate fieldmapper. Invalid hostname!";
 ?>
