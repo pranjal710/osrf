@@ -25,8 +25,12 @@ function checkhost()
 	return $retcode;
 	}
 
-function request($service, $method, $auth, $hold)
+function request()
 	{
+		$service = func_get_arg(0); 
+		$method = func_get_arg(1);
+		$auth = func_get_arg(2);
+		$hold = func_get_arg(3);
 		if(is_object($hold)) $hold = $hold->encodeForOpenSRF();
 		$arr = array ($auth, $hold);
 		$res = open_ils_simple_request($arr, $method, $service, $this->server);
