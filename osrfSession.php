@@ -29,10 +29,14 @@ function request()
 	{
 		$service = func_get_arg(0); 
 		$method = func_get_arg(1);
-		$auth = func_get_arg(2);
-		$hold = func_get_arg(3);
-		if(is_object($hold)) $hold = $hold->encodeForOpenSRF();
-		$arr = array ($auth, $hold);
+		$arr = array();
+		$k = 2;
+		while (func_get_arg($k) <> NULL) {
+			$add = func_get_arg($k);
+			if(is_object($add)) $add = $add->encodeForOpenSRF();
+			$arr[] = $add;
+			$k++;
+			}
 		$res = open_ils_simple_request($arr, $method, $service, $this->server);
 		$new_obj = new osrfResponse($res);
 		return $new_obj;
