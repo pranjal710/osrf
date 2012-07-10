@@ -3,9 +3,7 @@ include ("./../../osrfSession.php");
 
 $ses = new osrfSession("hostname"); // e.g.: localhost  remembers server & loads fieldmapper.
 if ($ses->checkhost() == 200) {
-	
-	$ses->loadcache(TRUE);	//FALSE to parse fieldmapper and create new fieldmapper class, TRUE for all other cases.
-	include ("./../../open_ils_login.php");
+	$ses->load_fieldmapper(FALSE); //FALSE to parse fieldmapper and create new fieldmapper class, TRUE for all other cases.
 	$authtoken = $ses->login('username', 'password');      ////  Authentication token
 	
 	$hold = new ahr();
