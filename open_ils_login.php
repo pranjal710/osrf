@@ -1,5 +1,4 @@
 <?php
-if ($fm_IDL_loadcache == FALSE) include ("./../../fieldmapper.php");
 if (!(file_exists('classfieldmapper.php'))) echo "Error: Classfieldmapper file not present.<br />";
 include ("classfieldmapper.php");
 include ("./../../decodejson2obj.php");
