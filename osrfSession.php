@@ -15,6 +15,11 @@ function login($user, $pass)
 	return open_ils_login($user, $pass, $this->server);
 	}
 	
+function loadcache($option)
+	{
+	if ($option == FALSE) include ("./../../fieldmapper.php");
+	}
+
 function checkhost()
 	{
 	$ch_idl = curl_init($this->fm_IDL);
