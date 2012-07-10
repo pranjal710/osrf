@@ -1,16 +1,12 @@
 <?php
 include ("./../../osrfSession.php");
 
-$ses = new osrfSession("hostname"); // e.g.: localhost  remembers server & loads fieldmapper.
+$ses = new osrfSession("localhost"); // e.g.: localhost  remembers server & loads fieldmapper.
 if ($ses->checkhost() == 200) {
-
+	$fm_IDL_loadcache = true;  //FALSE to parse fieldmapper and create new fieldmapper class, TRUE for all other cases.
 	include ("./../../open_ils_login.php");
-	include ("./../../fieldmapper.php");
-	include ("classfieldmapper.php");
-	include ("./../../decodejson2obj.php");
-	include ("./../../is_open_ils_event.php");
-	
-	$authtoken = $ses->login('username', 'password');      ////  Authentication token
+		
+	$authtoken = $ses->login('pranjal', 'prabhasH1');      ////  Authentication token
 	
 	$hold = new ahr();
 	$hold->target = 3;
