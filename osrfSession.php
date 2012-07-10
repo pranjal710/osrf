@@ -15,11 +15,14 @@ function login($user, $pass)
 	return open_ils_login($user, $pass, $this->server);
 	}
 	
-function loadcache($option)
+function load_fieldmapper($option)
 	{
 	if ($option == FALSE) include ("./../../fieldmapper.php");
+	if (!(file_exists('classfieldmapper.php'))) 
+		echo "Error: Classfieldmapper file not present.<br />";
+	else return include ("classfieldmapper.php");
 	}
-
+	
 function checkhost()
 	{
 	$ch_idl = curl_init($this->fm_IDL);
@@ -47,4 +50,7 @@ function request()
 		return $new_obj;
 	} 
 }
+include ("./../../decodejson2obj.php");
+include ("./../../is_open_ils_event.php");
+include ("./../../open_ils_login.php");
 ?>
