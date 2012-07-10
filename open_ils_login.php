@@ -1,9 +1,4 @@
 <?php
-if (!(file_exists('classfieldmapper.php'))) echo "Error: Classfieldmapper file not present.<br />";
-include ("classfieldmapper.php");
-include ("./../../decodejson2obj.php");
-include ("./../../is_open_ils_event.php");
-
 require('open_ils_simple_request.php');
 require('stdclass_to_array.php');
 function open_ils_login($username, $password, $server) {
