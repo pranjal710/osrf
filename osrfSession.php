@@ -31,7 +31,7 @@ function request()
 		$method = func_get_arg(1);
 		$arr = array();
 		$k = 2;
-		while (func_get_arg($k) <> NULL) {
+		while (func_get_arg($k) != NULL) {
 			$add = func_get_arg($k);
 			if(is_object($add)) $add = $add->encodeForOpenSRF();
 			$arr[] = $add;

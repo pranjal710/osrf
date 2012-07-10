@@ -78,7 +78,7 @@ function send()
  	curl_setopt($this->__curl, CURLOPT_HTTPHEADER, $header);
 
 	$this->server_result = curl_exec($this->__curl);
-	if (curl_error($this->__curl) <> 0 ) {
+	if (curl_error($this->__curl) != 0 ) {
 		$error = 'Curl error: ' . curl_error($this->__curl);
 		return $error;
 	}
