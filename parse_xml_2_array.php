@@ -25,7 +25,7 @@ function objectsIntoArray($arrObjData, $arrSkipIndices = array())
 
 
 <?php
-$xmlUrl = $ses->fm_IDL;
+$xmlUrl = $this->fm_IDL;
 $xmlStr = file_get_contents($xmlUrl);
 $xmlObj = simplexml_load_string($xmlStr);
 $arrXml = objectsIntoArray($xmlObj);
