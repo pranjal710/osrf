@@ -1,5 +1,5 @@
 <?php
-include ("./../../osrfSession.php");
+include ("./../../config.php");
 
 $ses = new osrfSession("hostname"); // e.g.: localhost  remembers server & loads fieldmapper.
 if ($ses->checkhost() == 200) {
