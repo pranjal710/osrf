@@ -1,7 +1,7 @@
 <?php
 include ("parse_xml_2_array.php");
 
-$myFile = "classfieldmapper.php";
+$myFile = $path_to_fieldmapper."classfieldmapper.php";
 $fh = fopen($myFile, 'w') or die("can't open file");
 $stringData = "<?php \n \n";
 fwrite($fh, $stringData);

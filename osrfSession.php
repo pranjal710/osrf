@@ -12,15 +12,24 @@ function __construct($u="localhost")
 
 function login($user, $pass)
 	{
-	return open_ils_login($user, $pass, $this->server);
+	try {
+		$value = open_ils_login($user, $pass, $this->server);
+	} catch (Exception $e) {
+				echo 'Error: ',  $e->getMessage(), "<br />";
+	}
+	return $value;
 	}
 	
 function load_fieldmapper($option)
 	{
+	global $path_to_fieldmapper;
 	if ($option == FALSE) include ("./../../fieldmapper.php");
-	if (!(file_exists('classfieldmapper.php'))) 
+	if (!(file_exists($path_to_fieldmapper."classfieldmapper.php"))) 
+		{
+		throw new Exception('ClassFieldmapper not found');
 		echo "Error: Classfieldmapper file not present.<br />";
-	else return include ("classfieldmapper.php");
+		}
+	else return include ($path_to_fieldmapper."classfieldmapper.php");
 	}
 	
 function checkhost()
