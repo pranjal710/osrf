@@ -5,7 +5,7 @@ $ses = new osrfSession("hostname"); // e.g.: localhost  remembers server & loads
 if ($ses->checkhost() == 200) {
 	
 	try {
-		$ses->load_fieldmapper(TRUE); //FALSE to parse fieldmapper and create new fieldmapper class, TRUE for all other cases.
+		$ses->load_fieldmapper(FALSE); //FALSE to parse fieldmapper and create new fieldmapper class, TRUE for all other cases.
 	} catch (Exception $e_load_idl) {
 						echo 'Error: ', $e_load_idl->getMessage() , "\n";
 					}
@@ -21,8 +21,8 @@ if ($ses->checkhost() == 200) {
 	$hold->usr = 1;
 	
 	$response = $ses->request("open-ils.circ", "open-ils.circ.holds.create", $authtoken, $hold)->parse_resp();
-	if ($response) {
-		if (is_open_ils_event($response)) {
+	if ($response['result'][0]) {
+		if (is_open_ils_event($response['result'][0])) {
 			echo "Could not place hold because of error: " . $response['result'][0]["desc"];
 		} 
 		else echo "Placed hold successfully. ID is " . $response['result'][0];
