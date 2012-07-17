@@ -1,7 +1,7 @@
 <?php
-require('osrfMessage.php');
-require('parse.php');
-require('osrfResponse.php');
+require(PATH_TO_OSRF_PHP_LIB.'osrfMessage.php');
+require(PATH_TO_OSRF_PHP_LIB.'parse.php');
+require(PATH_TO_OSRF_PHP_LIB.'osrfResponse.php');
 
 function open_ils_simple_request($arr, $m, $s, $server) {
 	$endpoint = $server;

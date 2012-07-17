@@ -1,4 +1,5 @@
 <?php
+include ("config.php");
 class osrfSession
 {
 public $server;
@@ -22,14 +23,12 @@ function login($user, $pass)
 	
 function load_fieldmapper($option)
 	{
-	global $path_to_fieldmapper;
-	if ($option == FALSE) include ("./../../fieldmapper.php");
-	if (!(file_exists($path_to_fieldmapper."classfieldmapper.php"))) 
+	if ($option == FALSE) include (PATH_TO_OSRF_PHP_LIB."fieldmapper.php");
+	if (!(file_exists(PATH_TO_FIELDMAPPER))) 
 		{
-		throw new Exception('ClassFieldmapper not found');
-		echo "Error: Classfieldmapper file not present.<br />";
+		throw new Exception('Could not locate ClassFieldmapper as described in config.php.');
 		}
-	else return include ($path_to_fieldmapper."classfieldmapper.php");
+	else return include (PATH_TO_FIELDMAPPER);
 	}
 	
 function checkhost()
@@ -59,7 +58,7 @@ function request()
 		return $new_obj;
 	} 
 }
-include ("./../../decodejson2obj.php");
-include ("./../../is_open_ils_event.php");
-include ("./../../open_ils_login.php");
+include (PATH_TO_OSRF_PHP_LIB."decodejson2obj.php");
+include (PATH_TO_OSRF_PHP_LIB."is_open_ils_event.php");
+include (PATH_TO_OSRF_PHP_LIB."open_ils_login.php");
 ?>

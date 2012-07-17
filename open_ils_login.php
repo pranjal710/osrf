@@ -1,6 +1,6 @@
 <?php
-require('open_ils_simple_request.php');
-require('stdclass_to_array.php');
+require(PATH_TO_OSRF_PHP_LIB.'open_ils_simple_request.php');
+require(PATH_TO_OSRF_PHP_LIB.'stdclass_to_array.php');
 function open_ils_login($username, $password, $server) {
 	$arr = array($username);
 	$m = 'open-ils.auth.authenticate.init';

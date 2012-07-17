@@ -1,11 +1,11 @@
 <?php
-include ("parse_xml_2_array.php");
+include (PATH_TO_OSRF_PHP_LIB."parse_xml_2_array.php");
 
-$myFile = $path_to_fieldmapper."classfieldmapper.php";
+$myFile = PATH_TO_FIELDMAPPER;
 $fh = fopen($myFile, 'w') or die("can't open file");
 $stringData = "<?php \n \n";
 fwrite($fh, $stringData);
-$stringData = "include (\"./../../fieldmapper_class_abstract.php\"); \n ";
+$stringData = "include (\"".PATH_TO_OSRF_PHP_LIB."fieldmapper_class_abstract.php\"); \n ";
 fwrite($fh, $stringData);
 for($i=0 ; $class[$i] != NULL ; $i++) {
 	$id = NULL;

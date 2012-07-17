@@ -26,7 +26,7 @@ class osrfResponse
 	function parse_resp() {
 		$con = $this->data;
 		$result_1 = stdclass_to_array($con);
-		return $result_1['result'][0];
+		return $result_1;
 	}
 }
 ?>

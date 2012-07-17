@@ -1,7 +1,8 @@
 <?php
-//PATH TO CREATE A DYNAMIC FIELDMAPPER FILE.
-$path_to_fieldmapper = "./";
+//
+//Example paths. Change these to the correct locations.
+//
+define('PATH_TO_FIELDMAPPER', "/var/lib/osrf/classfieldmapper.php"); 
+define('PATH_TO_OSRF_PHP_LIB', "/usr/share/");
 
-//FILES TO INCLUDE
-include ("./../../osrfSession.php");
 ?>
