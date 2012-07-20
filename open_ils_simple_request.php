@@ -1,20 +1,52 @@
 <?php
-require(PATH_TO_OSRF_PHP_LIB.'osrfMessage.php');
-require(PATH_TO_OSRF_PHP_LIB.'parse.php');
-require(PATH_TO_OSRF_PHP_LIB.'osrfResponse.php');
-
-function open_ils_simple_request($arr, $m, $s, $server) {
-	$endpoint = $server;
-	if ($endpoint) {
-	$a = new osrfMessage($m, $s, $arr, $endpoint);
-	}
-	else $a = new osrfMessage($m, $s, $arr);
-			
-			$response = $a->send();
-			if ($response) {
-				$response->parse();
-				return $response;
-			}
-	else throw new Exception('Service Unavailable');
+/**
+* opensrf_php
+*
+* PHP version 5
+*
+* @category PHP
+* @package  Opensrf
+* @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
+* @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
+* @link     https://www.github.com/pranjal710/
+*/
+/**
+* Open_ils_simple_request
+*
+* @category PHP
+* @package  Opensrf
+* @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
+*/
+require PATH_TO_OSRF_PHP_LIB.'osrfMessage.php';
+require PATH_TO_OSRF_PHP_LIB.'parse.php';
+require PATH_TO_OSRF_PHP_LIB.'osrfResponse.php';
+/**
+* Open_Ils_Simple_request
+*
+* @param array  $arr    parameters to pass to the method in an array
+*
+* @param string $m      method name
+*
+* @param string $s      service name
+*
+* @param string $server evergreen host
+*
+* @return string
+*/
+function Open_Ils_Simple_request($arr, $m, $s, $server)
+{
+    $endpoint = $server;
+    if ($endpoint) {
+        $a = new OsrfMessage($m, $s, $arr, $endpoint);
+    } else {
+        $a = new OsrfMessage($m, $s, $arr);
+    }
+    $response = $a->send();
+    if ($response) {
+        $response->parse();
+        return $response;
+    } else {
+        throw new Exception('Service Unavailable');
+    }
 }
 ?>

@@ -5,7 +5,7 @@ $ses = new osrfSession("hostname"); // e.g.: localhost  remembers server & loads
 if ($ses->checkhost() == 200) {
 	
 	try {
-		$ses->load_fieldmapper(FALSE); //FALSE to parse fieldmapper and create new fieldmapper class, TRUE for all other cases.
+		$ses->loadFieldmapper(FALSE); //FALSE to parse fieldmapper and create new fieldmapper class, TRUE for all other cases.
 	} catch (Exception $e_load_idl) {
 						echo 'Error: ', $e_load_idl->getMessage() , "\n";
 					}
@@ -14,10 +14,10 @@ if ($ses->checkhost() == 200) {
 	
 	$hold = new aou();
 	
-	$response = $ses->request("open-ils.actor", "open-ils.actor.org_tree.retrieve", $authtoken, $hold)->parse_resp();
+	$response = $ses->request("open-ils.actor", "open-ils.actor.org_tree.retrieve", $authtoken, $hold)->parseResp();
 	
 	if ($response) {
-		if (is_open_ils_event($response)) {
+		if (Is_Open_Ils_event($response)) {
 			echo "Could not place hold because of error: " . $response['result']["desc"];
 		} 
 		else echo "<pre>"; print_r ($response['result']); echo "</pre>";
