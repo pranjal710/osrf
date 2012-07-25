@@ -8,7 +8,7 @@ function tree($a, $n = 0)
     $f = 2;
     }
 
-    if (is_array($a[0]) && (!(empty($a[0])))) {
+    else if (is_array($a[0]) && (!(empty($a[0])))) {
     $n = $n + 2;
 	for ( $j = 0 ; is_array($a[$j]) ; $j++) {
 	    tree($a[$j], $n);
@@ -28,7 +28,7 @@ function tree($a, $n = 0)
 <?php
 include ("./../../osrfSession.php");
 
-$ses = new osrfSession("hostname"); // e.g.: localhost  remembers server & loads fieldmapper.
+$ses = new osrfSession("localhost"); // e.g.: localhost  remembers server & loads fieldmapper.
 if ($ses->checkhost() == 200) {
 	
 	try {
@@ -37,7 +37,7 @@ if ($ses->checkhost() == 200) {
 						echo 'Error: ', $e_load_idl->getMessage() , "\n";
 					}
 					
-	$authtoken = $ses->login('username', 'password');      ////  Authentication token
+	$authtoken = $ses->login('pranjal', 'prabhasH1');      ////  Authentication token
 	
 	$hold = new aou();
 	
