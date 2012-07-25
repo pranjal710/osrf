@@ -28,7 +28,7 @@ function tree($a, $n = 0)
 <?php
 include ("./../../osrfSession.php");
 
-$ses = new osrfSession("localhost"); // e.g.: localhost  remembers server & loads fieldmapper.
+$ses = new osrfSession("hostname"); // e.g.: localhost  remembers server & loads fieldmapper.
 if ($ses->checkhost() == 200) {
 	
 	try {
@@ -37,7 +37,7 @@ if ($ses->checkhost() == 200) {
 						echo 'Error: ', $e_load_idl->getMessage() , "\n";
 					}
 					
-	$authtoken = $ses->login('pranjal', 'prabhasH1');      ////  Authentication token
+	$authtoken = $ses->login('username', 'password');      ////  Authentication token
 	
 	$hold = new aou();
 	
