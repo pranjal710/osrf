@@ -1,7 +1,7 @@
 <?php
 include ("./../../osrfSession.php");
 
-$ses = new osrfSession("hostname"); // e.g.: localhost  remembers server & loads fieldmapper.
+$ses = new osrfSession("localhost"); // e.g.: localhost  remembers server & loads fieldmapper.
 if ($ses->checkhost() == 200) {
 	
 	try {

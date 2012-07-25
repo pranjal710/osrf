@@ -17,6 +17,6 @@
 * @package  Opensrf
 * @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
 */
-define('PATH_TO_FIELDMAPPER', "/openils/var/web/osrf/php_cs/classfieldmapper.php"); 
-define('PATH_TO_OSRF_PHP_LIB', "/openils/var/web/osrf/php_cs/");
+define('PATH_TO_FIELDMAPPER', "/openils/var/web/osrf/classfieldmapper.php"); 
+define('PATH_TO_OSRF_PHP_LIB', "/openils/var/web/osrf/");
 ?>
