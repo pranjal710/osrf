@@ -66,9 +66,11 @@ function recursive($obj)
     
         return $new;
     } else {
-        
-      // $new = recursive($obj);
-        return $obj;
+        for ( $i = 0 ; $i < (count($obj)) ; $i++ ) {
+        $new = recursive($obj[$i]);
+        }
+        //$new = recursive($obj);
+        return $new;
     }
 }
 
