@@ -20,7 +20,7 @@
 */
 function decodejson2obj($json_obj)
 {
-    $json_obj_parsed = Stdclass_To_array(json_decode($json_obj)); print_r ($json_obj_parsed);
+    $json_obj_parsed = Stdclass_To_array(json_decode($json_obj)); //print_r ($json_obj_parsed);
     $class = $json_obj_parsed['__c'];
     $parameter = $json_obj_parsed['__p'];
     $new = new $class();
@@ -48,7 +48,7 @@ function decodejson2obj($json_obj)
 
 function recursive($obj)
 {
-    if (is_array($obj) && array_key_exists('__c', $obj)) {
+    if ((is_array($obj)) && (array_key_exists('__c', $obj))) {
         $class = $obj['__c'];
         $parameter = $obj['__p'];
         $new = new $class();
@@ -66,6 +66,8 @@ function recursive($obj)
     
         return $new;
     } else {
+        
+      // $new = recursive($obj);
         return $obj;
     }
 }
