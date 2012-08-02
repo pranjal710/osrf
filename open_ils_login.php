@@ -36,11 +36,10 @@ function Open_Ils_login($username, $password, $server)
     $m = 'open-ils.auth.authenticate.init';
     $s = 'open-ils.auth';  
     try {
-        $response0 = Open_Ils_Simple_request($arr, $m, $s, $server);
+        $seed = Open_Ils_Simple_request($arr, $m, $s, $server);
     } catch (Exception $e0) {
-                echo 'Error: ',  $e0->getMessage(), "\n";
+        echo 'Error: ',  $e0->getMessage(), "\n";
     }
-    $seed = $response0->result;
     $password = md5($seed . md5($password));
     $arr = array("username"=>$username, "password"=>$password, "type"=>"opac"); 
     try {
@@ -51,12 +50,12 @@ function Open_Ils_login($username, $password, $server)
             $server
         );
     } catch (Exception $e1) {
-                echo 'Error: ',  $e1->getMessage(), "\n";
+            echo 'Error: ',  $e1->getMessage(), "\n";
     }
     
-    $login_response = Stdclass_To_array($response1);
-    if ($login_response['result']['ilsevent']=='0') {
-        return $login_response['result']['payload']['authtoken'];
+    $login_response = $response1;
+    if ($login_response['ilsevent']=='0') {
+        return $login_response['payload']['authtoken'];
     } else {
         throw new Exception('Login Error');
     }

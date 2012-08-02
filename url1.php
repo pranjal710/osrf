@@ -30,7 +30,7 @@ function urldata($method, $ar)
     $myobject2->__p = $myobject3;
     $myobject0 = new stdClass;
     $myobject0->threadTrace = 0;
-    $myobject0->type = REQUEST;
+    $myobject0->type = 'REQUEST';
     $myobject0->payload = $myobject2;
     $myobject0->locale = 'en-US';
     $myobject = new stdClass;

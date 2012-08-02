@@ -23,8 +23,6 @@ class OsrfResponse
 {
     public $data;
     public $result;
-    public $x_opensrf_from;
-    public $x_opensrf_thread;
     /**
     * constructor
     *
@@ -39,31 +37,30 @@ class OsrfResponse
     /**
     * parse
     *
-    * @return void
+    * @return object Result
     */
     function parse()
     {
-        $con = $this->data;
-        $result_1 = Parse_Http_response($con);
-        $result_ = json_decode($result_1[1]);
-        $variables = get_object_vars($result_[0]);
-        $keys = array_keys($variables);
-        $variable_f = get_object_vars($variables[$keys[1]]->payload);
-        $key_f = array_keys(get_object_vars($variables[$keys[1]]->payload));
-        $this->result = $variable_f[$key_f[1]]->content;
-        $this->x_opensrf_from = $result_1[0]['x-opensrf-from'];
-        $this->x_opensrf_thread = $result_1[0]['x-opensrf-thread'];
-    }
-    /**
-    * parseResp
-    *
-    * @return void
-    */
-    function parseResp()
-    {
-        $con = $this->data;
-        $result_1 = Stdclass_To_array($con);
-        return $result_1;
+        $first = Parse_Http_response($this->data);
+        $result_list = array();
+        if ($first[1]) {
+            $messages = Stdclass_to_array(json_decode($first[1]));
+            foreach ($messages as $msg) {
+                if ($msg["__p"]["type"] == "RESULT") {
+                    $result_list[] = decodeFromOpenSRF(
+                        $msg["__p"]["payload"]["__p"]["content"]
+                    );
+                }
+            }
+            if (count($result_list) == 1) {
+                return $result_list[0];
+            } else {
+                return $result_list;
+            }
+        } else {
+            print_r($this->data);
+            throw new Exception("did not get osrfMessage from network");
+        }
     }
 }
 ?>

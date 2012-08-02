@@ -108,9 +108,8 @@ class OsrfSession
             $arr[] = $add;
             $k++;
         }
-        $res = Open_Ils_Simple_request($arr, $method, $service, $this->server);
-        $new_obj = new OsrfResponse($res);
-        return $new_obj;
+        $msg = new OsrfMessage($method, $service, $arr, $this->server);
+        return $msg->send();
     } 
 }
     require PATH_TO_OSRF_PHP_LIB.'decodejson2obj.php';

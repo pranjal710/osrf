@@ -43,8 +43,7 @@ function Open_Ils_Simple_request($arr, $m, $s, $server)
     }
     $response = $a->send();
     if ($response) {
-        $response->parse();
-        return $response;
+        return $response->parse();
     } else {
         throw new Exception('Service Unavailable');
     }
