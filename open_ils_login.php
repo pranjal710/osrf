@@ -17,8 +17,8 @@
 * @package  Opensrf
 * @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
 */
-require PATH_TO_OSRF_PHP_LIB.'open_ils_simple_request.php';
-require PATH_TO_OSRF_PHP_LIB.'stdclass_to_array.php';
+require 'open_ils_simple_request.php';
+require 'stdclass_to_array.php';
 /**
 * Open_Ils_login
 *

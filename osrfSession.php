@@ -59,19 +59,19 @@ class OsrfSession
     *
     * @param string $option bool
     *
-    * @return string
+    * @return void
     */
     function loadFieldmapper($option)
     {
         if ($option == false) {
-            include PATH_TO_OSRF_PHP_LIB."fieldmapper.php";
+            include "fieldmapper.php";
         }
-        if (!(file_exists(PATH_TO_FIELDMAPPER))) {
+        if (!(file_exists(PATH_TO_FIELDMAPPER."classfieldmapper-".$this->server.".php"))) {
             throw new Exception(
                 'Could not locate ClassFieldmapper as described in config.php.'
             );
         } else {
-            return include PATH_TO_FIELDMAPPER;
+            return include PATH_TO_FIELDMAPPER."classfieldmapper-".$this->server.".php";
         }
     }
     /**
@@ -112,7 +112,7 @@ class OsrfSession
         return $msg->send();
     } 
 }
-    require PATH_TO_OSRF_PHP_LIB.'decodejson2obj.php';
-    require PATH_TO_OSRF_PHP_LIB.'is_open_ils_event.php';
-    require PATH_TO_OSRF_PHP_LIB.'open_ils_login.php';
+    require 'decodejson2obj.php';
+    require 'is_open_ils_event.php';
+    require 'open_ils_login.php';
 ?>

@@ -17,8 +17,8 @@
 * @package  Opensrf
 * @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
 */
-require PATH_TO_OSRF_PHP_LIB.'parse_xml_2_array.php';
-$myFile = PATH_TO_FIELDMAPPER;
+require 'parse_xml_2_array.php';
+$myFile = PATH_TO_FIELDMAPPER."classfieldmapper-".$this->server.".php";
 $fh = fopen($myFile, 'w') or die("can't open file");
 $stringData = "<?php \n \n";
 fwrite($fh, $stringData);

@@ -21,7 +21,6 @@ if ($ses->checkhost() == 200) {
     } catch (Exception $e_load_idl) {
         echo 'Error: ', $e_load_idl->getMessage() , "\n";
     }
-
     $result = $ses->request("open-ils.actor", "open-ils.actor.org_tree.retrieve", 1)->parse();
     if ($result) {
         if (Is_Open_Ils_event($result)) {
