@@ -10,7 +10,10 @@
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
 */
-require 'config.php';
+include 'config.php';
+include 'decodejson2obj.php';
+include 'is_open_ils_event.php';
+include 'open_ils_login.php';
 /**
 * OsrfSession
 *
@@ -115,7 +118,4 @@ class OsrfSession
         return $msg->send();
     } 
 }
-    require 'decodejson2obj.php';
-    require 'is_open_ils_event.php';
-    require 'open_ils_login.php';
 ?>

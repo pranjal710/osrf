@@ -10,6 +10,8 @@
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
 */
+include_once 'guid.php';
+include_once 'url1.php';
 /**
 * OsrfMessage
 *
@@ -86,7 +88,6 @@ class OsrfMessage
     */
     function header()
     {
-        include_once 'guid.php';
         $this->setGuid(guid());
         $this->header = array('X-OpenSRF-service: '.$this->service, 
         'X-OpenSRF-xid: '.time(), 'X-OpenSRF-thread: '.$this->getGuid());
@@ -99,7 +100,6 @@ class OsrfMessage
     */
     function toArray()
     {
-        include_once 'url1.php';
         $url4 = urldata($this->method, $this->param);
         return $url4;
     }
