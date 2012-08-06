@@ -21,7 +21,8 @@
 * @return object
 */
 
-function decodeFromOpenSRF($data) {
+function decodeFromOpenSRF($data)
+{
     if (!is_array($data)) {
         return $data;
     } else if (!isset($data['__c']) || !class_exists($data['__c'])) {

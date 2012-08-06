@@ -66,12 +66,15 @@ class OsrfSession
         if ($option == false) {
             include "fieldmapper.php";
         }
-        if (!(file_exists(PATH_TO_FIELDMAPPER."classfieldmapper-".$this->server.".php"))) {
+        if (!(file_exists(
+            PATH_TO_FIELDMAPPER."classfieldmapper-".$this->server.".php"
+        ))) {
             throw new Exception(
                 'Could not locate ClassFieldmapper as described in config.php.'
             );
         } else {
-            return include PATH_TO_FIELDMAPPER."classfieldmapper-".$this->server.".php";
+            return include PATH_TO_FIELDMAPPER."classfieldmapper-"
+            .$this->server.".php";
         }
     }
     /**
