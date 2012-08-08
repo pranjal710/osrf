@@ -10,10 +10,10 @@
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
 */
-include 'config.php';
-include 'decodejson2obj.php';
-include 'is_open_ils_event.php';
-include 'open_ils_login.php';
+require 'config.php';
+require 'decodejson2obj.php';
+require 'is_open_ils_event.php';
+require 'open_ils_login.php';
 /**
 * OsrfSession
 *
@@ -67,7 +67,7 @@ class OsrfSession
     function loadFieldmapper($option)
     {
         if ($option == false) {
-            include "fieldmapper.php";
+            require "fieldmapper.php";
         }
         if (!(file_exists(
             PATH_TO_FIELDMAPPER."classfieldmapper-".$this->server.".php"

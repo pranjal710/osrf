@@ -10,8 +10,8 @@
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
 */
-include_once 'guid.php';
-include_once 'url1.php';
+require_once 'guid.php';
+require_once 'url1.php';
 /**
 * OsrfMessage
 *

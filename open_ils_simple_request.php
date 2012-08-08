@@ -17,9 +17,9 @@
 * @package  Opensrf
 * @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
 */
-include 'osrfMessage.php';
-include 'parse.php';
-include 'osrfResponse.php';
+require 'osrfMessage.php';
+require 'parse.php';
+require 'osrfResponse.php';
 /**
 * Open_Ils_Simple_request
 *
