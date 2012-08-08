@@ -67,7 +67,7 @@ class OsrfSession
     function loadFieldmapper($option)
     {
         if ($option == false) {
-            require "fieldmapper.php";
+            include "fieldmapper.php";
         }
         if (!(file_exists(
             PATH_TO_FIELDMAPPER."classfieldmapper-".$this->server.".php"
