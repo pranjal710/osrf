@@ -3,7 +3,7 @@
 
 The PHP Binding for openSRF takes services, methods and data(also as parameter) to return a simple parsed output. The examples/ directory shows how to use the API.
 
-*In senator's words:*
+*In Lebbeous Fogle-Weekley's words:*
 >These PHP bindings for the OpenSRF library allow you to make requests and receive responses from OpenSRF services, such as those that comprise >the Evegreen Integrated Library System (ILS).
 >
 >Examples of how to use the bindings to contact typical services for Evergreen are under the examples/ directory.
@@ -17,13 +17,13 @@ The PHP Binding for openSRF takes services, methods and data(also as parameter) 
 
 **Files**
 
-*Config.php*
+**config.php**
 
 This is the main configuration page. It holds the Golbal Variable which define the full path to classfieldmapper file.
 
 
 
-**Decodejson2obj.php**
+**decodejson2obj.php**
 
 *function decodeFromOpenSRF($data)*
 
@@ -31,7 +31,7 @@ Recursively turns an already decoded json object i.e. The parameter $data to fie
 
 
 
-**Fieldmapper.php**
+**fieldmapper.php**
 
 *abstract class Fieldmapper_Class*
 
@@ -43,7 +43,7 @@ It recursively encodes an object to be send to opensrf.
 
 
 
-**fieldmapper_abstract_class.php**
+**fieldmapper_class_abstract.php**
 
 It is an abstract class which holds the methods that is used by the numerous class of classfieldmapper.php
 
