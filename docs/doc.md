@@ -27,7 +27,7 @@ This is the main configuration page. It holds the Golbal Variable which define t
 
 *function decodeFromOpenSRF($data)*
 
-Recursively turns an already decoded json object i.e. The parameter $data to fieldmapper object
+Recursively turns an already decoded json object *i.e.* The parameter $data to fieldmapper object
 
 
 
@@ -35,7 +35,7 @@ Recursively turns an already decoded json object i.e. The parameter $data to fie
 
 *abstract class Fieldmapper_Class*
 
-Create/overwrites a dynamic file i.e. Classfieldmapper.php from parsed data obtained from fm_IDL (http://hostname/reports/fm_IDL.xml). Its member functions are getter, setter and encodeforopensrf().
+Create/overwrites a dynamic file *i.e.* Classfieldmapper.php from parsed data obtained from fm_IDL (http://hostname/reports/fm_IDL.xml). Its member functions are getter, setter and encodeforopensrf().
 
 *Fieldmapper_Class::function encodeForOpenSRF()*
 
@@ -116,7 +116,7 @@ It takes two parameters, one as an array object and the other parameter tells wh
 
 *function Stdclass_To_array($ar)*
 
-This takes one parameter. $ar is converted to the respective object depending on ['__c'] index of array
+This takes one parameter *i.e.* $ar. $ar can be an array or an object. It returns an array by converting the object to an associative array.
 
 
 
@@ -125,3 +125,21 @@ This takes one parameter. $ar is converted to the respective object depending on
 *function urldata($method, $ar)*
 
 One parameter tell about the method to use and the other array $ar holds the data which is used to form the encoded url
+
+
+
+
+**A brief overview of the functioning of openSRF-PHP API**
+============================================================
+
+*Open_Ils_Simple_request()* present in *open_ils_simple_request.php* mainly manages the process. it creates an instance of *osrfMessage Class* and then parses it through another instance of *osrfResponse Class* and its member functions.
+
+An instance of *Class osrfMessage* is used to interact with openSRF service. method, service, endpoint and param are set by the *constructor*. *setGuid()* sets the guid so that an HTTP header can be formed, and it can also help in creating a stateful session when required. With the information gathered a HTTP header is created by *function header()*. *Function toArray()* creates $data which will be used by the curl handle. *function send()* uses libcurlto interact with openSRF. If successfull, it returns a HTTP response. 
+
+HTTP response has to be parsed to get the desired result. The result is a json encoded string. For this purpose *Class osrfResponse* is present. *Function send()* initializes $data property of an instance of *Class osrfMessage*. The *function parse()* is then used to parse the generic HTTP response to get the desired output and returns it.
+
+*Open_Ils_Simple_request()* thus gets the parsed result. This functions takes four parameters which are an array, service, method and a server. The array contains the data to form the HTTP header. Depending upon the service, method and the array it gets the response. Other functions use *Open_Ils_Simple_request()* to get result *eg. function Open_Ils_login()* uses it to get an authtoken on successfull login, else it throws an exception.
+
+When multiple user use it, in other words, in case of multiple session, each of these classes and functions should have multiple instances running. To make that happen we have a topmost class: *Class osrfSession*. The example scripts diectly use *Class osrfSession* instances. The constructor sets the server and fm_IDL. Its member functions do as they are named. *function login()* checks username/password for their authenticity. *function loadFieldmapper()* returns the path to *Class classfieldmapper*, which is defined in config.php. *function checkhost()* checks whether hostname entered is true or not and *function request()* deals with *Class osrfMessage*.
+
+The user can use all these files by just including *osrfSession.php*, as it has all other files included. He first creates an instance of *Class osrfSession* and sets hostname, which also sets fm_IDL for different servers. Now he needs to load *Class classfieldmapper* so that he can use numerous the classes present in it. Depending upon whether to used a cached file or to create a new one he sets true or false resp. . Now he has all the required files and functions to go on. He can use an instance of any class(es) from classfieldmapper.php and use *Class osrfSession* member functions to interact with openSRF services.
