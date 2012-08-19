@@ -4,11 +4,11 @@
 The PHP Binding for openSRF takes services, methods and data(also as parameter) to return a simple parsed output. The examples/ directory shows how to use the API.
 
 *In Lebbeous Fogle-Weekley's words:*
->These PHP bindings for the OpenSRF library allow you to make requests and receive responses from OpenSRF services, such as those that comprise >the Evegreen Integrated Library System (ILS).
+>These PHP bindings for the OpenSRF library allow you to make requests and receive responses from OpenSRF services, such as those that comprise the Evegreen Integrated Library System (ILS).
 >
 >Examples of how to use the bindings to contact typical services for Evergreen are under the examples/ directory.
 >
->Setting up an OpenSRF session will retrieve the fm_IDL.xml file from the targeted server, which provides that server's Interface Description >Language.  This essentially means class definitions that allow certain data structures to be interpreted as objects in the Object-oriented sense.
+>Setting up an OpenSRF session will retrieve the fm_IDL.xml file from the targeted server, which provides that server's Interface Description Language.  This essentially means class definitions that allow certain data structures to be interpreted as objects in the Object-oriented sense.
 
 
 **Requirements:** *PHP version > 5 and libcurl*
