@@ -8,6 +8,8 @@ While a complete guide to openSRF can be found on *http://open-ils.org/dokuwiki/
  
 Imagine an application architecture in which 10 lines of Perl or Python, using the data types native to each language, are enough to implement a method that can then be deployed and invoked seamlessly across hundreds of servers. You have just imagined developing with OpenSRF – it is truly that simple. Under the covers, of course, the OpenSRF language bindings do an incredible amount of work on behalf of the developer. An OpenSRF application consists of one or more OpenSRF services that expose methods: for example, the opensrf.simple-text demonstration service exposes the opensrf.simple-text.split() and opensrf.simple-text.reverse() methods. Each method accepts zero or more arguments and returns zero or one results. The data types supported by OpenSRF arguments and results are typical core language data types: strings, numbers, booleans, arrays, and hashes.
 
+*(source : http://docs.evergreen-ils.org/1.6/draft/html/writing_an_opensrf_service.html)*
+
 
 Introduction 
 -------------
