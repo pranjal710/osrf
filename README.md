@@ -1,6 +1,6 @@
 **openSRF** 
 ==================================
-While a complete guide to openSRF can be found on *http://open-ils.org/dokuwiki/doku.php?id=osrf-devel:user_s_guide*, here is a quick intro to openSRF. 
+While a complete guide to openSRF can be found on *http://journal.code4lib.org/articles/3284*, here is a quick intro to openSRF. 
 >The Open Service Request Framework (or OpenSRF, pronounced “open surf”) is an inter-application message passing architecture built on XMPP (aka “jabber”). The Evergreen open source library system is built on an OpenSRF architecture to support loosely coupled individual components communicating over an OpenSRF messaging bus. This article introduces OpenSRF, demonstrates how to build OpenSRF services through simple code examples, explains the technical foundations on which OpenSRF is built, and evaluates OpenSRF’s value in the context of Evergreen. Part 1 of a 2 part article in this issue.
 
  By Dan Scott
