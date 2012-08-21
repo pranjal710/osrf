@@ -1,6 +1,8 @@
 **openSRF** 
 ==================================
-While a complete guide to openSRF can be found on *http://journal.code4lib.org/articles/3284*, here is a quick intro to openSRF. 
+openSRF is a message passing architecture. We have many message passing systems today. While browsing a bit over the internet I came across many, a few listed here **http://en.wikipedia.org/wiki/Message_passing#Message_passing_systems**. So why do have this new message passing thing?? Well, this document talks about it. And if you like to read a lot, you can go the links given at different sections of this document. For others, you can talk to Evergreen, an open source Integrated Library System (ILS).
+
+While a complete guide to openSRF can be found at *http://journal.code4lib.org/articles/3284*, here is a quick intro to openSRF. 
 >The Open Service Request Framework (or OpenSRF, pronounced “open surf”) is an inter-application message passing architecture built on XMPP (aka “jabber”). The Evergreen open source library system is built on an OpenSRF architecture to support loosely coupled individual components communicating over an OpenSRF messaging bus. This article introduces OpenSRF, demonstrates how to build OpenSRF services through simple code examples, explains the technical foundations on which OpenSRF is built, and evaluates OpenSRF’s value in the context of Evergreen. Part 1 of a 2 part article in this issue.
 
  By Dan Scott
