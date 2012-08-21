@@ -31,4 +31,4 @@ Testing
 
 There are test servers freely available, which can be used to test the code. Test servers can be found at *http://open-ils.org/dokuwiki/doku.php?id=community_servers*
 
-If you still have any doubts, you are free to talk to **Evergreen, an open source Integrated Library System (ILS)** ( *IRC: #evergreen channel on the Freenode server* HomePage: *http://evergreen-ils.org/* )
+If you still have any questions or doubts, you are free to talk to **Evergreen, an open source Integrated Library System (ILS)** ( *IRC: #evergreen channel on the Freenode server* HomePage: *http://evergreen-ils.org/* )
