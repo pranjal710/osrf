@@ -118,7 +118,7 @@ class OsrfMessage
     *
     * @return string
     */
-    function send1()
+    function send()
     {
         require_once 'HTTP/Request2.php';
         $endpoint = $this->endpoint;
