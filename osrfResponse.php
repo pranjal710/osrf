@@ -42,9 +42,10 @@ class OsrfResponse
     function parse()
     {
         $first = Parse_Http_response($this->data);
+        $result = '[{"__c":'.$first[0]['[{"__c"'];
         $result_list = array();
-        if ($first[1]) {
-            $messages = Stdclass_to_array(json_decode($first[1]));
+        if ($result) {
+            $messages = Stdclass_to_array(json_decode($result));
             foreach ($messages as $msg) {
                 if ($msg["__p"]["type"] == "RESULT") {
                     $result_list[] = decodeFromOpenSRF(
@@ -52,6 +53,7 @@ class OsrfResponse
                     );
                 }
             }
+            
             if (count($result_list) == 1) {
                 return $result_list[0];
             } else {
@@ -61,6 +63,7 @@ class OsrfResponse
             print_r($this->data);
             throw new Exception("did not get osrfMessage from network");
         }
+        
     }
 }
 ?>
