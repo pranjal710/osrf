@@ -89,29 +89,22 @@ class OsrfMessage
     function header()
     {
         $this->setGuid(guid());
-        //$this->header = array('X-OpenSRF-service: '.$this->service, 
-        //'X-OpenSRF-xid: '.time(), 'X-OpenSRF-thread: '.$this->getGuid());
         $this->header = array($this->service, 
         time(), $this->getGuid());
         return $this->header;
     }
     
-    function header1()
-    {
-        $this->setGuid(guid());
-        $this->header = array('X-OpenSRF-service: '.$this->service, 
-        'X-OpenSRF-xid: '.time(), 'X-OpenSRF-thread: '.$this->getGuid());
-        return $this->header;
-    }
+    
     /**
     * toArray
     *
+    * @param string $data json_encoded string
+    *
     * @return string
     */
-    function toArray()
+    function toArray($data)
     {
-        $url4 = urldata($this->method, $this->param);
-        return $url4;
+        return "osrf-msg=" . urlencode($data);
     }
     /**
     * send
@@ -120,33 +113,30 @@ class OsrfMessage
     */
     function send()
     {
-        require_once 'HTTP/Request2.php';
+        include_once 'HTTP/Request2.php';
         $endpoint = $this->endpoint;
-        $data = $this->toArray();
-        $header = $this->header1();
+        $data = urldata($this->method, $this->param);
+        $header = $this->header();
         $url_post = 'http://'.$endpoint.'/osrf-http-translator';
-        $this->curl = curl_init();
-        curl_setopt($this->curl, CURLOPT_URL, $url_post);
-        curl_setopt($this->curl, CURLOPT_HEADER, 1);
-        curl_setopt($this->curl, CURLOPT_POST, 1);
-        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $header);
-        $this->server_result = curl_exec($this->curl);
-        if (curl_error($this->curl) != 0 ) {
-            $error = 'Curl error: ' . curl_error($this->curl);
-            return $error;
-        }
-        var_dump ($this->server_result);
-        echo "<HR />";
-        
         $request = new HTTP_Request2();
         $request->setUrl($url_post);
-        $request->setHeader(array('X-OpenSRF-service' => $header[0], 'X-OpenSRF-xid' => $header[1], 'X-OpenSRF-thread' => $header[2]));
+        $request->setHeader(
+            array(
+                                    'X-OpenSRF-service' => $header[0], 
+                                    'X-OpenSRF-xid' => $header[1], 
+                                    'X-OpenSRF-thread' => $header[2])
+        );
         $request->setMethod(HTTP_Request2::METHOD_POST);
-        $request->addPostParameter($data);
-        var_dump ($request); echo "<HR />";
-        $response = $request->send(); var_dump($response);
+        $request->addPostParameter("osrf-msg", $data);
+        $response = $request->send(); 
+        $responseBody = $response->getBody();
+        $responseHeader=$response->getHeader();
+        $returnResponse = $responseBody."\n";
+        foreach ($responseHeader as $key => $value) {
+            $returnResponse = $returnResponse.ucfirst($key).": $value\n";
+        }
+        $res = new OsrfResponse($returnResponse);
+        return $res;
     }
 }
 ?>
