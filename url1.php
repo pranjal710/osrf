@@ -37,8 +37,6 @@ function urldata($method, $ar)
     $myobject->__c = 'osrfMessage';
     $myobject->__p = $myobject0;
     $d = array($myobject);
-    $r = json_encode($d);
-    $d1 = 'osrf-msg=' . urlencode($r);
-    return $d1;
+    return json_encode($d);
 }
 ?>
