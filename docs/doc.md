@@ -11,7 +11,7 @@ The PHP Binding for openSRF takes services, methods and data(also as parameter) 
 >Setting up an OpenSRF session will retrieve the fm_IDL.xml file from the targeted server, which provides that server's Interface Description Language.  This essentially means class definitions that allow certain data structures to be interpreted as objects in the Object-oriented sense.
 
 
-**Requirements:** *PHP version > 5 and libcurl*
+**Requirements:** *PHP version > 5 and HTTP_Request2*
 
 
 
