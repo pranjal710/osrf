@@ -24,7 +24,7 @@ OpenSRF is a distinct break from the architectural approach used by previous lib
 Library
 -------
 
-The working of this library is explained in the *docs/* directory
+The working of this library is explained in *pranjal710/osrf/docs/* directory
 
 Testing 
 --------
