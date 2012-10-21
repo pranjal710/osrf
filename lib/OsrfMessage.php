@@ -1,11 +1,11 @@
 <?php
 /**
-* opensrf_php
+* opensrf-php
 *
 * PHP version 5
 *
 * @category PHP
-* @package  Opensrf
+* @package  Opensrf-php
 * @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
@@ -16,7 +16,7 @@ require_once 'Url1.php';
 * OsrfMessage
 *
 * @category PHP
-* @package  Opensrf
+* @package  Opensrf-php
 * @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
