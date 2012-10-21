@@ -87,12 +87,11 @@ class OsrfSession
     */
     function checkhost()
     {
-        $ch_idl = curl_init($this->fm_IDL);
-        curl_setopt($ch_idl, CURLOPT_NOBODY, true);
-        curl_exec($ch_idl);
-        $retcode = curl_getinfo($ch_idl, CURLINFO_HTTP_CODE); 
-        /** $retcode > 400 -> not found, $retcode = 200, found. **/
-        curl_close($ch_idl);
+        require_once 'HTTP/Request2.php';
+        $request = new HTTP_Request2($this->fm_IDL, HTTP_Request2::METHOD_GET);
+        $response = $request->send();
+        $retcode = $response->getStatus();
+        /** $retcode = 400 -> not found, $retcode = 200, found. **/
         return $retcode;
     }
     /**
