@@ -13,7 +13,7 @@ function print_names($node, $depth = 0) {
     }
 }
 
-$ses = new osrfSession("evergreen.owwl.org"); // e.g.: localhost  remembers server & loads fieldmapper.
+$ses = new osrfSession("hostname"); // e.g.: localhost  remembers server & loads fieldmapper.
 if ($ses->checkhost() == 200) {
 
     try {
