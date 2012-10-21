@@ -1,4 +1,4 @@
-**OpenSRF PHP**
+**OpenSRF-PHP**
 ===============
 
 The PHP Binding for openSRF takes services, methods and data(also as parameter) to return a simple parsed output. The examples/ directory shows how to use the API.
