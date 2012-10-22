@@ -87,7 +87,7 @@ class OsrfSession
     */
     function checkhost()
     {
-        require_once 'HTTP/Request2.php';
+        include_once 'HTTP/Request2.php';
         $request = new HTTP_Request2($this->fm_IDL, HTTP_Request2::METHOD_GET);
         $response = $request->send();
         $retcode = $response->getStatus();
