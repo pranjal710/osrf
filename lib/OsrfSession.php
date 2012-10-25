@@ -11,10 +11,8 @@
 * @link     https://www.github.com/pranjal710/
 */
 require 'Config.php';
-require 'DecodeJson2Obj.php';
-require 'IsOpenIlsEvent.php';
 require_once 'OpenIlsSimpleRequest.php';
-require_once 'StdclassToArray.php';
+require_once 'methods.php';
 require_once 'OsrfMessage.php';
 //require 'OpenIlsLogin.php';
 /**

@@ -18,7 +18,6 @@
 * @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
 */
 require 'OsrfMessage.php';
-require 'Parse.php';
 require 'OsrfResponse.php';
 /**
 * Open_Ils_Simple_request
