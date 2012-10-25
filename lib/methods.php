@@ -108,3 +108,4 @@ function Stdclass_To_array($ar)
         return $ar;
     }
 }
+?>
