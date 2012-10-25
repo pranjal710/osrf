@@ -1,11 +1,11 @@
 <?php
 /**
-* opensrf_php
+* opensrf-php
 *
 * PHP version 5
 *
 * @category PHP
-* @package  Opensrf
+* @package  Opensrf-php
 * @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
@@ -13,12 +13,15 @@
 require 'Config.php';
 require 'DecodeJson2Obj.php';
 require 'IsOpenIlsEvent.php';
-require 'OpenIlsLogin.php';
+require_once 'OpenIlsSimpleRequest.php';
+require_once 'StdclassToArray.php';
+require_once 'OsrfMessage.php';
+//require 'OpenIlsLogin.php';
 /**
 * OsrfSession
 *
 * @category PHP
-* @package  Opensrf
+* @package  Opensrf-php
 * @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
@@ -51,7 +54,38 @@ class OsrfSession
     function login($user, $pass)
     {
         try {
-            $value = Open_Ils_login($user, $pass, $this->server);
+            $arr = array($username);
+            $m = 'open-ils.auth.authenticate.init';
+            $s = 'open-ils.auth';  
+            try {
+                $seed = Open_Ils_Simple_request($arr, $m, $s, $server);
+            } catch (Exception $e0) {
+                echo 'Error: ',  $e0->getMessage(), "\n";
+            }
+            $password = md5($seed . md5($password));
+            $arr = array(
+                            "username"=>$username, 
+                            "password"=>$password, 
+                            "type"=>"opac"
+                        ); 
+            try {
+                    $response1 = Open_Ils_Simple_request(
+                        array($arr), 
+                        $m = 'open-ils.auth.authenticate.complete', 
+                        $s = 'open-ils.auth', 
+                        $server
+                    );
+            } catch (Exception $e1) {
+                echo 'Error: ',  $e1->getMessage(), "\n";
+            }
+    
+            $login_response = $response1;
+            if ($login_response['ilsevent']=='0') {
+                $value = $login_response['payload']['authtoken'];
+            } else {
+                throw new Exception('Login Error');
+            }
+
         } catch (Exception $e) {
             echo 'Error: ',  $e->getMessage(), "<br />";
         }

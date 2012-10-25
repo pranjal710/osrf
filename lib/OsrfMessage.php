@@ -1,22 +1,21 @@
 <?php
 /**
-* opensrf_php
+* opensrf-php
 *
 * PHP version 5
 *
 * @category PHP
-* @package  Opensrf
+* @package  Opensrf-php
 * @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
 */
-require_once 'Guid.php';
-require_once 'Url1.php';
+
 /**
 * OsrfMessage
 *
 * @category PHP
-* @package  Opensrf
+* @package  Opensrf-php
 * @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
@@ -28,6 +27,7 @@ class OsrfMessage
     public $method;
     public $param = array();
     public $to;
+    public $data;
     public $header;
     public $service;
     public $curl;
@@ -64,13 +64,26 @@ class OsrfMessage
     /**
     * setter
     *
-    * @param int $guid guid
-    *
     * @return void
     */
-    function setGuid($guid)
+    function setGuid()
     {
-        $this->guid = $guid;
+        if (function_exists('com_create_guid')) {
+            return com_create_guid();
+        } else {
+            mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
+            $charid = strtoupper(md5(uniqid(rand(), true)));
+            $hyphen = chr(45);// "-"
+            $uuid = chr(123)// "{"
+                    .substr($charid, 0, 8).$hyphen
+                    .substr($charid, 8, 4).$hyphen
+                    .substr($charid, 12, 4).$hyphen
+                    .substr($charid, 16, 4).$hyphen
+                    .substr($charid, 20, 12)
+                    .chr(125);// "}"
+            
+        }
+            $this->guid = $uuid;
     }
     /**
     * getter
@@ -88,7 +101,7 @@ class OsrfMessage
     */
     function header()
     {
-        $this->setGuid(guid());
+        $this->setGuid();
         $this->header = array($this->service, 
         time(), $this->getGuid());
         return $this->header;
@@ -107,6 +120,34 @@ class OsrfMessage
         return "osrf-msg=" . urlencode($data);
     }
     /**
+    * Creates object to send
+    *
+    * @param string $method The method
+    *
+    * @param array  $ar     Data
+    *
+    * @return string
+    */
+    function urldata($method, $ar)
+    {
+        $myobject3 = new stdClass;
+        $myobject3->method = $method;
+        $myobject3->params = $ar;
+        $myobject2 = new stdClass;
+        $myobject2->__c = 'osrfMethod';
+        $myobject2->__p = $myobject3;
+        $myobject0 = new stdClass;
+        $myobject0->threadTrace = 0;
+        $myobject0->type = 'REQUEST';
+        $myobject0->payload = $myobject2;
+        $myobject0->locale = 'en-US';
+        $myobject = new stdClass;
+        $myobject->__c = 'osrfMessage';
+        $myobject->__p = $myobject0;
+        $d = array($myobject);
+        return json_encode($d);
+    }
+    /**
     * send
     *
     * @return string
@@ -115,7 +156,7 @@ class OsrfMessage
     {
         include_once 'HTTP/Request2.php';
         $endpoint = $this->endpoint;
-        $data = urldata($this->method, $this->param);
+        $data = $this->urldata($this->method, $this->param);
         $header = $this->header();
         $url_post = 'http://'.$endpoint.'/osrf-http-translator';
         $request = new HTTP_Request2();
