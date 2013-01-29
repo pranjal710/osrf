@@ -43,4 +43,3 @@ if ($ses->checkhost() == 200) {
 else echo "Could not locate fieldmapper. Invalid hostname!";
 ?>
 
-
