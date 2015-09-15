@@ -194,50 +194,50 @@ class OsrfSession
      */
     function writeFieldmapper()
     {
+        //Loop through the contents of the IDL XML and assign to arrays of class and field
         $xmlUrl = $this->fm_IDL;
         $xmlStr = file_get_contents($xmlUrl);
         $xmlObj = simplexml_load_string($xmlStr);
         $arrXml = $this->objectsIntoArray($xmlObj);
         $class = array();
         $field = array();
-        for ($i= 0 ; $arrXml['class'][$i]['@attributes']['id'] != null ; $i++) {
-            $class[] = $arrXml['class'][$i]['@attributes']['id'];
-            $class_id = $arrXml['class'][$i]['@attributes']['id'];
+        foreach($arrXml['class'] as $i) {
+            $class[] = $i['@attributes']['id'];
+            $class_id = $i['@attributes']['id'];
             $inner = null;
             $field[$class_id] = array();
-            for (
-                $j= 0 ;
-            $arrXml['class'][$i]['fields']['field'][$j]['@attributes']['name'] != null ;
-            $j++
-            ) {
-                $field[$class_id][]
-                = $arrXml['class'][$i]['fields']['field'][$j]['@attributes']['name'];
+            foreach($i['fields']['field'] as $j) {
+                if (isset($j['@attributes']['name']) && !is_null($j['@attributes']['name'])) {
+                    $field[$class_id][] = $j['@attributes']['name'];
+                }
             }
         }
 
+        //Create our Fieldmapper...
         $myFile = $this->getFieldmapperFileName();
         $fh = fopen($myFile, 'w') or die("can't open file");
         $stringData = "<?php \n \n";
         fwrite($fh, $stringData);
         //Refer to a known file (assume location of library won't change).
         $classFile = str_ireplace(__CLASS__, 'FieldmapperClassAbstract', __FILE__);
-        $stringData = "include (\"$classFile\"); \n ";
+        $stringData = "include (\"$classFile\"); \n \n";
         fwrite($fh, $stringData);
-        for ($i=0 ; $class[$i] != null ; $i++) {
-            $id = null;
-            $stringData = "Class ".$class[$i]." extends
-        Fieldmapper_Class{\nprotected \$_properties = array(";
-            $id = $class[$i];
-            $data = null;
+        //Write out our holding arrays as classes and fields
+        foreach($class as $i){
+            $stringData = "Class $i extends Fieldmapper_Class {\n";
+            $stringData .= "  protected \$_properties = array(\n";
             fwrite($fh, $stringData);
-            for ($j=0 ; $field[$id][$j] != null ; $j++) {
-                $data = $data.'"'.$j.'" => \''.$field[$id][$j].'\', ';
+            $stringData = null;
+            foreach($field[$i] as $k => $v){
+                $stringData .= '    "'.$k.'" => \''.$v.'\','."\n";
             }
-            $stringData = substr($data, 0, -2);
+            $stringData = substr($stringData, 0, -2);
             fwrite($fh, $stringData);
-            $stringData = "); \n} \n \n";
+            $stringData = "\n  );\n";
+            $stringData .= "}\n\n";
             fwrite($fh, $stringData);
         }
+        // Finish up.
         $stringData = "?>";
         fwrite($fh, $stringData);
         fclose($fh);
