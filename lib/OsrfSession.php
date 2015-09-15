@@ -10,7 +10,6 @@
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
 */
-require 'Config.php';
 require_once 'OpenIlsSimpleRequest.php';
 require_once 'methods.php';
 require_once 'OsrfMessage.php';
@@ -220,8 +219,9 @@ class OsrfSession
         $fh = fopen($myFile, 'w') or die("can't open file");
         $stringData = "<?php \n \n";
         fwrite($fh, $stringData);
-        $stringData = "include (\"".
-            PATH_TO_OSRF_PHP_LIB."FieldmapperClassAbstract.php\"); \n ";
+        //Refer to a known file (assume location of library won't change).
+        $classFile = str_ireplace(__CLASS__, 'FieldmapperClassAbstract', __FILE__);
+        $stringData = "include (\"$classFile\"); \n ";
         fwrite($fh, $stringData);
         for ($i=0 ; $class[$i] != null ; $i++) {
             $id = null;
