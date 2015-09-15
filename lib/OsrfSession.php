@@ -35,7 +35,7 @@ class OsrfSession
     *
     * @return void
     */
-    function __construct($u="localhost") 
+    function __construct($u="localhost")
     {
         $this->server = $u;
         $this->fm_IDL = "http://".$u."/reports/fm_IDL.xml";
@@ -49,43 +49,45 @@ class OsrfSession
     *
     * @return string
     */
-    function login($user, $pass)
+    function login($username, $password)
     {
         try {
             $arr = array($username);
             $m = 'open-ils.auth.authenticate.init';
-            $s = 'open-ils.auth';  
+            $s = 'open-ils.auth';
             try {
-                $seed = Open_Ils_Simple_request($arr, $m, $s, $server);
+                $seed = Open_Ils_Simple_request($arr, $m, $s, $this->server);
             } catch (Exception $e0) {
                 echo 'Error: ',  $e0->getMessage(), "\n";
             }
             $password = md5($seed . md5($password));
             $arr = array(
-                            "username"=>$username, 
-                            "password"=>$password, 
+                            "username"=>$username,
+                            "password"=>$password,
                             "type"=>"opac"
-                        ); 
+                        );
             try {
                     $response1 = Open_Ils_Simple_request(
-                        array($arr), 
-                        $m = 'open-ils.auth.authenticate.complete', 
-                        $s = 'open-ils.auth', 
-                        $server
+                        array($arr),
+                        $m = 'open-ils.auth.authenticate.complete',
+                        $s = 'open-ils.auth',
+                        $this->server
                     );
             } catch (Exception $e1) {
                 echo 'Error: ',  $e1->getMessage(), "\n";
             }
-    
+
             $login_response = $response1;
             if ($login_response['ilsevent']=='0') {
                 $value = $login_response['payload']['authtoken'];
             } else {
-                throw new Exception('Login Error');
+                $msg = $login_response['textcode'] . ': ' . $login_response['desc'];
+                throw new Exception("Login Error for username '$username': $msg");
             }
 
         } catch (Exception $e) {
-            echo 'Error: ',  $e->getMessage(), "<br />";
+            $msg = $e->getMessage();
+            throw new Exception("Login Error: $msg");
         }
         return $value;
     }
@@ -133,7 +135,7 @@ class OsrfSession
     */
     function request()
     {
-        $service = func_get_arg(0); 
+        $service = func_get_arg(0);
         $method = func_get_arg(1);
         $arr = array();
         $k = 2;
@@ -147,6 +149,6 @@ class OsrfSession
         }
         $msg = new OsrfMessage($method, $service, $arr, $this->server);
         return $msg->send();
-    } 
+    }
 }
 ?>
