@@ -135,9 +135,11 @@ class OsrfSession
     {
         $service = func_get_arg(0);
         $method = func_get_arg(1);
+        // Extract other parameters
+        $numargs = func_num_args();
         $arr = array();
         $k = 2;
-        while (func_get_arg($k) !== false) {
+        while ($k < $numargs && func_get_arg($k) !== false) {
             $add = func_get_arg($k);
             if (is_object($add)) {
                 $add = $add->encodeForOpenSRF();
