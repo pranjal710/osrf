@@ -101,11 +101,10 @@ class OsrfSession
     */
     function loadFieldmapper($useExistingFieldMapper)
     {
-        include "Fieldmapper.php";
         if ($useExistingFieldMapper == false) {
-            writeFieldmapper();
+            $this->writeFieldmapper();
         }
-        $mapperFileName = getFieldmapperFileName();
+        $mapperFileName = $this->getFieldmapperFileName();
         if (!(file_exists($mapperFileName))) {
             throw new Exception(
                 'Could not locate Fieldmapper ' . $mapperFileName
@@ -149,6 +148,99 @@ class OsrfSession
         }
         $msg = new OsrfMessage($method, $service, $arr, $this->server);
         return $msg->send();
+    }
+    /**
+     * objectsIntoArray
+     *
+     * @param array $arrObjData     array index
+     *
+     * @param array $arrSkipIndices array index to skip
+     *
+     * @return string
+     */
+    function objectsIntoArray($arrObjData, $arrSkipIndices = array())
+    {
+        $arrData = array();
+        if (is_object($arrObjData)) {
+            $arrObjData = get_object_vars($arrObjData);
+        }
+        if (is_array($arrObjData)) {
+            foreach ($arrObjData as $index => $value) {
+                if (is_object($value) || is_array($value)) {
+                    $value = $this->objectsIntoArray($value, $arrSkipIndices);
+                }
+                if (in_array($index, $arrSkipIndices)) {
+                    continue;
+                }
+                $arrData[$index] = $value;
+            }
+        }
+        return $arrData;
+    }
+    /**
+     * getFieldmapperFileName
+     *
+     * @return string
+     */
+    function getFieldmapperFileName()
+    {
+        return sys_get_temp_dir().DIRECTORY_SEPARATOR."classfieldmapper-".$this->server.".php";
+    }
+    /**
+     * writeFieldmapper
+     *
+     * Writes a new Fieldmapper file.
+     *
+     * @return void
+     */
+    function writeFieldmapper()
+    {
+        $xmlUrl = $this->fm_IDL;
+        $xmlStr = file_get_contents($xmlUrl);
+        $xmlObj = simplexml_load_string($xmlStr);
+        $arrXml = $this->objectsIntoArray($xmlObj);
+        $class = array();
+        $field = array();
+        for ($i= 0 ; $arrXml['class'][$i]['@attributes']['id'] != null ; $i++) {
+            $class[] = $arrXml['class'][$i]['@attributes']['id'];
+            $class_id = $arrXml['class'][$i]['@attributes']['id'];
+            $inner = null;
+            $field[$class_id] = array();
+            for (
+                $j= 0 ;
+            $arrXml['class'][$i]['fields']['field'][$j]['@attributes']['name'] != null ;
+            $j++
+            ) {
+                $field[$class_id][]
+                = $arrXml['class'][$i]['fields']['field'][$j]['@attributes']['name'];
+            }
+        }
+
+        $myFile = $this->getFieldmapperFileName();
+        $fh = fopen($myFile, 'w') or die("can't open file");
+        $stringData = "<?php \n \n";
+        fwrite($fh, $stringData);
+        $stringData = "include (\"".
+            PATH_TO_OSRF_PHP_LIB."FieldmapperClassAbstract.php\"); \n ";
+        fwrite($fh, $stringData);
+        for ($i=0 ; $class[$i] != null ; $i++) {
+            $id = null;
+            $stringData = "Class ".$class[$i]." extends
+        Fieldmapper_Class{\nprotected \$_properties = array(";
+            $id = $class[$i];
+            $data = null;
+            fwrite($fh, $stringData);
+            for ($j=0 ; $field[$id][$j] != null ; $j++) {
+                $data = $data.'"'.$j.'" => \''.$field[$id][$j].'\', ';
+            }
+            $stringData = substr($data, 0, -2);
+            fwrite($fh, $stringData);
+            $stringData = "); \n} \n \n";
+            fwrite($fh, $stringData);
+        }
+        $stringData = "?>";
+        fwrite($fh, $stringData);
+        fclose($fh);
     }
 }
 ?>
