@@ -17,6 +17,5 @@
 * @package  Opensrf-php
 * @author   Pranjal Prabhash <pranjal.prabhash@gmail.com>
 */
-define('PATH_TO_FIELDMAPPER', "/tmp/"); 
 define('PATH_TO_OSRF_PHP_LIB', "/path/to/osrf/lib/");
 ?>

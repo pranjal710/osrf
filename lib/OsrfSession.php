@@ -91,27 +91,27 @@ class OsrfSession
         }
         return $value;
     }
+
     /**
     * loadFieldmapper
     *
-    * @param string $option bool
+    * @param string $useExistingFieldMapper bool
     *
     * @return void
     */
-    function loadFieldmapper($option)
+    function loadFieldmapper($useExistingFieldMapper)
     {
-        if ($option == false) {
-            include "Fieldmapper.php";
+        include "Fieldmapper.php";
+        if ($useExistingFieldMapper == false) {
+            writeFieldmapper();
         }
-        if (!(file_exists(
-            PATH_TO_FIELDMAPPER."classfieldmapper-".$this->server.".php"
-        ))) {
+        $mapperFileName = getFieldmapperFileName();
+        if (!(file_exists($mapperFileName))) {
             throw new Exception(
-                'Could not locate ClassFieldmapper as described in config.php.'
+                'Could not locate Fieldmapper ' . $mapperFileName
             );
         } else {
-            return include PATH_TO_FIELDMAPPER."classfieldmapper-"
-            .$this->server.".php";
+            return include $mapperFileName;
         }
     }
     /**
