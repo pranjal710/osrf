@@ -11,8 +11,7 @@ The PHP Binding for openSRF takes services, methods and data(also as parameter) 
 >Setting up an OpenSRF session will retrieve the fm_IDL.xml file from the targeted server, which provides that server's Interface Description Language.  This essentially means class definitions that allow certain data structures to be interpreted as objects in the Object-oriented sense.
 
 
-**Requirements:** *PHP version > 5 and HTTP_Request2*
-
+**Requirements:** *PHP version > 5 and Guzzle 5*
 
 
 **Files**
@@ -83,7 +82,7 @@ It takes two parameters, one as an array object and the other parameter tells wh
 
 *Open_Ils_Simple_request()* present in *OpenIlsSimpleRequest.php* mainly manages the process. it creates an instance of *osrfMessage Class* and then parses it through another instance of *osrfResponse Class* and its member functions.
 
-An instance of *Class osrfMessage* is used to interact with openSRF service. method, service, endpoint and param are set by the *constructor*. *setGuid()* sets the guid so that an HTTP header can be formed, and it can also help in creating a stateful session when required. With the information gathered a HTTP header is created by *function header()*. *Function toArray()* creates $data which will be used by the HTTP_REQUEST2 class. *function send()* uses HTTP_REQUEST2 to interact with openSRF. If successfull, it returns a response.
+An instance of *Class osrfMessage* is used to interact with openSRF service. method, service, endpoint and param are set by the *constructor*. *setGuid()* sets the guid so that an HTTP header can be formed, and it can also help in creating a stateful session when required. With the information gathered a HTTP header is created by *function header()*. *Function toArray()* creates $data which will be used in the HTTP request. *function send()* sends the HTTP request to interact with openSRF. If successfull, it returns a response.
 
 HTTP response has to be parsed to get the desired result. The result is a json encoded string. For this purpose *Class osrfResponse* is present. *Function send()* initializes $data property of an instance of *Class osrfMessage*. The *function parse()* is then used to parse the generic HTTP response to get the desired output and returns it.
 

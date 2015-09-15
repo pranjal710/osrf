@@ -14,6 +14,9 @@ require_once 'OpenIlsSimpleRequest.php';
 require_once 'methods.php';
 require_once 'OsrfMessage.php';
 //require 'OpenIlsLogin.php';
+
+use \GuzzleHttp\Client;
+
 /**
 * OsrfSession
 *
@@ -37,7 +40,7 @@ class OsrfSession
     function __construct($u="localhost")
     {
         $this->server = $u;
-        $this->fm_IDL = "http://".$u."/reports/fm_IDL.xml";
+        $this->fm_IDL = "/reports/fm_IDL.xml";
     }
     /**
     * constructor
@@ -54,28 +57,19 @@ class OsrfSession
             $arr = array($username);
             $m = 'open-ils.auth.authenticate.init';
             $s = 'open-ils.auth';
-            try {
-                $seed = Open_Ils_Simple_request($arr, $m, $s, $this->server);
-            } catch (Exception $e0) {
-                echo 'Error: ',  $e0->getMessage(), "\n";
-            }
+            $seed = Open_Ils_Simple_request($arr, $m, $s, $this->server);
             $password = md5($seed . md5($password));
             $arr = array(
-                            "username"=>$username,
-                            "password"=>$password,
-                            "type"=>"opac"
-                        );
-            try {
-                    $response1 = Open_Ils_Simple_request(
-                        array($arr),
-                        $m = 'open-ils.auth.authenticate.complete',
-                        $s = 'open-ils.auth',
-                        $this->server
-                    );
-            } catch (Exception $e1) {
-                echo 'Error: ',  $e1->getMessage(), "\n";
-            }
-
+                    "username"=>$username,
+                    "password"=>$password,
+                    "type"=>"opac"
+                );
+            $response1 = Open_Ils_Simple_request(
+                array($arr),
+                $m = 'open-ils.auth.authenticate.complete',
+                $s = 'open-ils.auth',
+                $this->server
+            );
             $login_response = $response1;
             if ($login_response['ilsevent']=='0') {
                 $value = $login_response['payload']['authtoken'];
@@ -119,10 +113,11 @@ class OsrfSession
     */
     function checkhost()
     {
-        include_once 'HTTP/Request2.php';
-        $request = new HTTP_Request2($this->fm_IDL, HTTP_Request2::METHOD_GET);
-        $response = $request->send();
-        $retcode = $response->getStatus();
+        $guzzleClient = new GuzzleHttp\Client([
+            'base_url' => "http://" . $this->server,
+        ]);
+        $guzzleResponse = $guzzleClient->get($this->fm_IDL);
+        $retcode = $guzzleResponse->getStatusCode();
         /** $retcode = 400 -> not found, $retcode = 200, found. **/
         return $retcode;
     }
@@ -197,7 +192,7 @@ class OsrfSession
     function writeFieldmapper()
     {
         //Loop through the contents of the IDL XML and assign to arrays of class and field
-        $xmlUrl = $this->fm_IDL;
+        $xmlUrl = "http://" . $this->server . $this->fm_IDL;
         $xmlStr = file_get_contents($xmlUrl);
         $xmlObj = simplexml_load_string($xmlStr);
         $arrXml = $this->objectsIntoArray($xmlObj);

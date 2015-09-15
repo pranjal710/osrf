@@ -11,6 +11,8 @@
 * @link     https://www.github.com/pranjal710/
 */
 
+use \GuzzleHttp\Client;
+
 /**
 * OsrfMessage
 *
@@ -81,7 +83,7 @@ class OsrfMessage
                     .substr($charid, 16, 4).$hyphen
                     .substr($charid, 20, 12)
                     .chr(125);// "}"
-            
+
         }
             $this->guid = $uuid;
     }
@@ -102,12 +104,12 @@ class OsrfMessage
     function header()
     {
         $this->setGuid();
-        $this->header = array($this->service, 
+        $this->header = array($this->service,
         time(), $this->getGuid());
         return $this->header;
     }
-    
-    
+
+
     /**
     * toArray
     *
@@ -154,27 +156,33 @@ class OsrfMessage
     */
     function send()
     {
-        include_once 'HTTP/Request2.php';
         $endpoint = $this->endpoint;
         $data = $this->urldata($this->method, $this->param);
         $header = $this->header();
-        $url_post = 'http://'.$endpoint.'/osrf-http-translator';
-        $request = new HTTP_Request2();
-        $request->setUrl($url_post);
-        $request->setHeader(
+
+        $guzzleClient = new Client(
             array(
-                                    'X-OpenSRF-service' => $header[0], 
-                                    'X-OpenSRF-xid' => $header[1], 
-                                    'X-OpenSRF-thread' => $header[2])
+                'base_url' =>"http://" . $endpoint,
+            )
         );
-        $request->setMethod(HTTP_Request2::METHOD_POST);
-        $request->addPostParameter("osrf-msg", $data);
-        $response = $request->send(); 
-        $responseBody = $response->getBody();
-        $responseHeader=$response->getHeader();
+        $guzzleQuery = array("osrf-msg" => $data);
+        $guzzleHeaders = array(
+            'X-OpenSRF-service' => $header[0],
+            'X-OpenSRF-xid' => $header[1],
+            'X-OpenSRF-thread' => $header[2]
+        );
+        $guzzleResponse = $guzzleClient->post('/osrf-http-translator',
+            array(
+                'headers' => $guzzleHeaders,
+                'body' => $guzzleQuery,
+            )
+        );
+        $responseBody = $guzzleResponse->getBody();
+        $responseHeaders = $guzzleResponse->getHeaders();
+        //Use structure OsrfResponse expects.
         $returnResponse = $responseBody."\n";
-        foreach ($responseHeader as $key => $value) {
-            $returnResponse = $returnResponse.ucfirst($key).": $value\n";
+        foreach ($responseHeaders as $name => $values) {
+            $returnResponse .= ucfirst(strtolower($name)).": " . implode(", ", $values) . "\n";
         }
         $res = new OsrfResponse($returnResponse);
         return $res;
