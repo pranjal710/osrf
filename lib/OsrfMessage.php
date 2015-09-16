@@ -39,30 +39,30 @@ class OsrfMessage
     /**
     * Constructor.
     *
-    * @param string $x method name
+    * @param string $method method name
     *
-    * @param string $z service name
+    * @param string $service service name
     *
-    * @param string $y parameter
+    * @param string $params parameter
     *
-    * @param string $u endpoint
+    * @param string $endpoint endpoint
     *
     * @return string
     */
-    function __construct($x, $z, $y, $u="opensrf")
+    function __construct($method, $service, $params, $endpoint="opensrf")
     {
-        if (is_string($x)) {
-            $this->method = $x;
-        } elseif (is_object($x)) {
-            $this->method = $x;
+        if (is_string($method)) {
+            $this->method = $method;
+        } elseif (is_object($method)) {
+            $this->method = $method;
         }
-        if (is_string($z)) {
-            $this->service = $z;
-        } elseif (is_object($z)) {
-            $this->service = $z;
+        if (is_string($service)) {
+            $this->service = $service;
+        } elseif (is_object($service)) {
+            $this->service = $service;
         }
-        $this->param = $y;
-        $this->endpoint = $u;
+        $this->param = $params;
+        $this->endpoint = $endpoint;
     }
 
     /**

@@ -25,13 +25,6 @@ It is an abstract class which holds the methods that is used by the numerous cla
 
 It recursively encodes an object to be send to opensrf.
 
-**OpenIlsSimpleRequest.php**
-
-*function Open_Ils_Simple_request($arr, $m, $s, $server)*
-
-This is one of the most important function. It takes three parameters (method, service, and an array) as parameters. The array contains data to form the HTTP header. It returns a parsed response.
-
-
 **OsrfMessage.php**
 
 This class is used in sending and retrieving messages to openSRF service. Its member functions are:

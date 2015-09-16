@@ -10,8 +10,8 @@
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
 */
-require_once 'OpenIlsSimpleRequest.php';
 require_once 'OsrfMessage.php';
+require_once 'OsrfResponse.php';
 //require 'OpenIlsLogin.php';
 
 use \GuzzleHttp\Client;
@@ -72,7 +72,7 @@ class OsrfSession
     {
         try {
             $arr = array($username);
-            $seed = Open_Ils_Simple_request(
+            $seed = $this->simpleRequest(
                 $arr,
                 'open-ils.auth.authenticate.init',
                 'open-ils.auth',
@@ -84,7 +84,7 @@ class OsrfSession
                 "password"=>$password,
                 "type"=>"opac"
             );
-            $response1 = Open_Ils_Simple_request(
+            $response1 = $this->simpleRequest(
                 array($arr),
                 $m = 'open-ils.auth.authenticate.complete',
                 $s = 'open-ils.auth',
@@ -140,6 +140,36 @@ class OsrfSession
         $retcode = $guzzleResponse->getStatusCode();
         /** $retcode = 400 -> not found, $retcode = 200, found. **/
         return $retcode;
+    }
+
+    /**
+     * Helper method to make a simple OpenSRF request.
+     *
+     * @param array  $arr    parameters to pass to the method in an array
+     *
+     * @param string $m      method name
+     *
+     * @param string $s      service name
+     *
+     * @param string $server evergreen host
+     *
+     * @return string
+     */
+    function simpleRequest($arr, $m, $s, $server)
+    {
+        //@todo this seems to be similar to OsrfMessage; combine?
+        $endpoint = $server;
+        if ($endpoint) {
+            $a = new OsrfMessage($m, $s, $arr, $endpoint);
+        } else {
+            $a = new OsrfMessage($m, $s, $arr);
+        }
+        $response = $a->send();
+        if ($response) {
+            return $response->parse();
+        } else {
+            throw new Exception('Service Unavailable');
+        }
     }
 
     /**
