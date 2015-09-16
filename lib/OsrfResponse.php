@@ -22,22 +22,29 @@
 class OsrfResponse
 {
     /**
-     * Raw data from an OpenSRF response.
+     * Raw OpenSRF response.
      *
      * @var mixed
      */
-    public $data;
+    public $raw;
+
+    /**
+     * Parsed OpenSRF response.
+     *
+     * @var mixed
+     */
+    public $parsed;
 
     /**
     * Constructor.
     *
-    * @param string $data data
+    * @param string $raw raw
     *
     * @return void
     */
-    function __construct($data)
+    function __construct($raw)
     {
-        $this->data = $data;
+        $this->raw = $raw;
     }
 
     /**
@@ -47,27 +54,66 @@ class OsrfResponse
     */
     function parse()
     {
-        $first = $this->parse_Http_response($this->data);
-        $result = '[{"__c":'.$first[0]['[{"__c"'];
-        $result_list = array();
-        if ($result) {
-            $messages = json_decode($result, true);
-            foreach ($messages as $msg) {
-                if ($msg["__p"]["type"] == "RESULT") {
-                    $result_list[] = $this->decodeFromOpenSRF(
-                        $msg["__p"]["payload"]["__p"]["content"]
-                    );
-                }
-            }
+        //Perform initial parsing.
+        $this->parsed = $this->parse_Http_response($this->raw);
+        //A response may contain multiple messages...
 
-            if (count($result_list) == 1) {
-                return $result_list[0];
-            } else {
-                return $result_list;
+        //Track STATUS(es) of the response
+        $this->status = array();
+        $problematicStatus = false;
+
+        //Track RESULT(s) of the response
+        $results = array();
+        //Extract relevant messages into a result.
+
+        foreach ($this->parsed['osrfmessages'] as $msg) {
+            //@todo decodeFromOpenSRF() seems to take a JSON payload, that is itself nested in a payload via __c and __p?
+            //As in, calling it first is meaningless.
+            switch ($msg["__p"]["type"]) {
+        	case 'RESULT':
+        	    $results[] = $this->decodeFromOpenSRF(
+        	        $msg["__p"]["payload"]["__p"]["content"]
+        	    );
+        	    break;
+    	    case 'STATUS':
+    	        $statusCode = $this->decodeFromOpenSRF(
+    	           $msg["__p"]["payload"]["__p"]["statusCode"]
+    	        );
+    	        $statusMsg = $this->decodeFromOpenSRF(
+    	           $msg["__p"]["payload"]["__p"]["status"]
+    	        );
+    	        $this->status[] = array(
+    	        	'statusCode' => $statusCode,
+    	            'statusMsg' => $statusMsg,
+    	        );
+    	        //See http://stuff.coffeecode.net/OpenSRF/OpenSRF/tags/legacy_openils/HEAD/doc/OpenSRF-Messaging-Protocol.html
+    	        //Heuristic: throw exception if one or more STATUS(es) seem problematic.
+    	        if (
+        	        $statusCode == 400 ||
+        	        $statusCode == 403 ||
+        	        $statusCode == 404 ||
+        	        $statusCode == 408 ||
+        	        $statusCode == 417
+    	        ) {
+    	            $problematicStatus = $statusCode . ': '.$statusMsg;
+    	        }
+	        break;
             }
-        } else {
-            print_r($this->data);
-            throw new Exception("did not get osrfMessage from network");
+        }
+        if ($problematicStatus) {
+            throw new Exception("Problematic STATUS(es) in osrfResponse: " . $problematicStatus);
+        }
+
+
+        switch (count($results)){
+    	case 0:
+    	    throw new Exception("No RESULT(s) in osrfMessage");
+    	case 1:
+    	    //Return our single RESULT
+    	    return $results[0];
+    	default:
+            //Return our multiple RESULTS
+            return $results;
         }
     }
 
@@ -81,7 +127,7 @@ class OsrfResponse
      */
     function Is_Open_Ils_event()
     {
-        return is_array($this->data) && array_key_exists("ilsevent", $this->data);
+        return is_array($this->raw) && array_key_exists("ilsevent", $this->raw);
     }
 
     /**
@@ -118,7 +164,17 @@ class OsrfResponse
             }
             $str = strtok("\n");
         }
-        return array($headers, trim($content));
+        //Re-create, then parse, the actual osrfMessage(s).
+        if (!isset($headers['[{"__c"'])){
+            throw new Exception("did not get osrfMessage from network");
+        }
+        $osrfMessage = '[{"__c":'.$headers['[{"__c"'];
+        $osrfMessage = json_decode($osrfMessage, true);
+        return array(
+            'headers' => $headers,
+            'content' => trim($content),
+            'osrfmessages' => $osrfMessage
+        );
     }
 
     /**
