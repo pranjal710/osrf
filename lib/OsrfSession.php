@@ -58,6 +58,20 @@ class OsrfSession
     }
 
     /**
+     * Convenience method to initialise a session.
+     *
+     * @throws Exception
+     */
+    function init()
+    {
+        $this->checkhost();
+        if ($this->checkhost() !== 200) {
+            throw new Exception("Could not open OSRF session");
+        }
+        $this->loadFieldmapper();
+    }
+
+    /**
     * Login (authenticate).
     *
     * See http://wiki.evergreen-ils.org/doku.php?id=mozilla-devel:birds_eye_view for some documentation on this.
@@ -67,6 +81,8 @@ class OsrfSession
     * @param string $pass password
     *
     * @return string
+    *
+    * @throws Exception
     */
     function login($username, $password)
     {
@@ -105,24 +121,27 @@ class OsrfSession
     }
 
     /**
-    * loadFieldmapper
+    * Load Fieldmapper.
     *
-    * @param string $useExistingFieldMapper bool
+    * A temporary version is cached, for performance.
     *
     * @return void
+    *
+    * @throws Exception
     */
-    function loadFieldmapper($useExistingFieldMapper)
+    function loadFieldmapper()
     {
-        if ($useExistingFieldMapper == false) {
-            $this->writeFieldmapper();
-        }
         $mapperFileName = $this->getFieldmapperFileName();
         if (!(file_exists($mapperFileName))) {
+            $this->writeFieldmapper();
+        }
+        if (!(file_exists($mapperFileName))) {
+            // Something went wrong; Fieldmapper should now exist.
             throw new Exception(
-                'Could not locate Fieldmapper ' . $mapperFileName
+                'Could not load Fieldmapper: ' . $mapperFileName
             );
         } else {
-            return include $mapperFileName;
+            return include_once $mapperFileName;
         }
     }
 
@@ -154,6 +173,8 @@ class OsrfSession
      * @param string $server evergreen host
      *
      * @return string
+     *
+     * @throws Exception
      */
     function simpleRequest($arr, $m, $s, $server)
     {
