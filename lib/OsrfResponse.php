@@ -42,7 +42,7 @@ class OsrfResponse
     *
     * @return void
     */
-    function __construct($raw)
+    public function __construct($raw)
     {
         $this->raw = $raw;
     }
@@ -51,8 +51,10 @@ class OsrfResponse
     * Parse an OpenSRF response.
     *
     * @return object Result
+    *
+    * @throws Exception
     */
-    function parse()
+    public function parse()
     {
         //Perform initial parsing.
         $this->parsed = $this->parse_Http_response($this->raw);
@@ -70,48 +72,47 @@ class OsrfResponse
             //@todo decodeFromOpenSRF() seems to take a JSON payload, that is itself nested in a payload via __c and __p?
             //As in, calling it first is meaningless.
             switch ($msg["__p"]["type"]) {
-        	case 'RESULT':
-        	    $results[] = $this->decodeFromOpenSRF(
-        	        $msg["__p"]["payload"]["__p"]["content"]
-        	    );
-        	    break;
-    	    case 'STATUS':
-    	        $statusCode = $this->decodeFromOpenSRF(
-    	           $msg["__p"]["payload"]["__p"]["statusCode"]
-    	        );
-    	        $statusMsg = $this->decodeFromOpenSRF(
-    	           $msg["__p"]["payload"]["__p"]["status"]
-    	        );
-    	        $this->status[] = array(
-    	        	'statusCode' => $statusCode,
-    	            'statusMsg' => $statusMsg,
-    	        );
-    	        //See http://stuff.coffeecode.net/OpenSRF/OpenSRF/tags/legacy_openils/HEAD/doc/OpenSRF-Messaging-Protocol.html
-    	        //Heuristic: throw exception if one or more STATUS(es) seem problematic.
-    	        if (
-        	        $statusCode == 400 ||
-        	        $statusCode == 403 ||
-        	        $statusCode == 404 ||
-        	        $statusCode == 408 ||
-        	        $statusCode == 417
-    	        ) {
-    	            $problematicStatus = $statusCode . ': '.$statusMsg;
-    	        }
-	        break;
+            case 'RESULT':
+                $results[] = $this->decodeFromOpenSRF(
+                    $msg["__p"]["payload"]["__p"]["content"]
+                );
+                break;
+            case 'STATUS':
+                $statusCode = $this->decodeFromOpenSRF(
+                   $msg["__p"]["payload"]["__p"]["statusCode"]
+                );
+                $statusMsg = $this->decodeFromOpenSRF(
+                   $msg["__p"]["payload"]["__p"]["status"]
+                );
+                $this->status[] = array(
+                    'statusCode' => $statusCode,
+                    'statusMsg' => $statusMsg,
+                );
+                //See http://stuff.coffeecode.net/OpenSRF/OpenSRF/tags/legacy_openils/HEAD/doc/OpenSRF-Messaging-Protocol.html
+                //Heuristic: throw exception if one or more STATUS(es) seem problematic.
+                if (
+                    $statusCode == 400 ||
+                    $statusCode == 403 ||
+                    $statusCode == 404 ||
+                    $statusCode == 408 ||
+                    $statusCode == 417
+                ) {
+                    $problematicStatus = $statusCode . ': '.$statusMsg;
+                }
+            break;
             }
         }
         if ($problematicStatus) {
             throw new Exception("Problematic STATUS(es) in osrfResponse: " . $problematicStatus);
         }
 
-
         switch (count($results)){
-    	case 0:
-    	    throw new Exception("No RESULT(s) in osrfMessage");
-    	case 1:
-    	    //Return our single RESULT
-    	    return $results[0];
-    	default:
+        case 0:
+            throw new Exception("No RESULT(s) in osrfMessage");
+        case 1:
+            //Return our single RESULT
+            return $results[0];
+        default:
             //Return our multiple RESULTS
             return $results;
         }
@@ -125,7 +126,7 @@ class OsrfResponse
      *
      * @return bool
      */
-    function Is_Open_Ils_event()
+    public function Is_Open_Ils_event()
     {
         return is_array($this->raw) && array_key_exists("ilsevent", $this->raw);
     }
@@ -136,8 +137,10 @@ class OsrfResponse
      * @param string $string HTTP Response string
      *
      * @return array
+     *
+     * @throws Exception
      */
-    function parse_Http_response($string)
+    protected function parse_Http_response($string)
     {
         $headers = array();
         $content = '';
@@ -186,8 +189,7 @@ class OsrfResponse
      *
      * @return object
      */
-
-    function decodeFromOpenSRF($data)
+    protected function decodeFromOpenSRF($data)
     {
         if (!is_array($data)) {
             return $data;

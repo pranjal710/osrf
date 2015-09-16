@@ -49,7 +49,7 @@ class OsrfMessage
     *
     * @return string
     */
-    function __construct($method, $service, $params, $endpoint="opensrf")
+    public function __construct($method, $service, $params, $endpoint="opensrf")
     {
         if (is_string($method)) {
             $this->method = $method;
@@ -70,7 +70,7 @@ class OsrfMessage
     *
     * @return void
     */
-    function setGuid()
+    public function setGuid()
     {
         if (function_exists('com_create_guid')) {
             return com_create_guid();
@@ -95,7 +95,7 @@ class OsrfMessage
     *
     * @return int
     */
-    function getGuid()
+    public function getGuid()
     {
         return $this->guid;
     }
@@ -105,7 +105,7 @@ class OsrfMessage
     *
     * @return string
     */
-    function header()
+    public function header()
     {
         $this->setGuid();
         $this->header = array($this->service,
@@ -120,7 +120,7 @@ class OsrfMessage
     *
     * @return string
     */
-    function toArray($data)
+    public function toArray($data)
     {
         return "osrf-msg=" . urlencode($data);
     }
@@ -134,7 +134,7 @@ class OsrfMessage
     *
     * @return string
     */
-    function urldata($method, $ar)
+    protected function urldata($method, $ar)
     {
         $myobject3 = new stdClass;
         $myobject3->method = $method;
@@ -159,7 +159,7 @@ class OsrfMessage
     *
     * @return object OsrfResponse
     */
-    function send()
+    public function send()
     {
         $endpoint = $this->endpoint;
         $data = $this->urldata($this->method, $this->param);

@@ -32,7 +32,7 @@ abstract class Fieldmapper_Class
     *
     * @return void
     */
-    function __set($field, $value)
+    public function __set($field, $value)
     {
         //Only set value if it is a known property.
         if (in_array($field, $this->_properties)) {
@@ -53,7 +53,7 @@ abstract class Fieldmapper_Class
     *
     * @return string
     */
-    function __get($field)
+    public function __get($field)
     {
         if ($field == "_properties") {
             return $this->$field;
@@ -77,7 +77,7 @@ abstract class Fieldmapper_Class
     *
     * @return array
     */
-    function encodeForOpenSRF()
+    public function encodeForOpenSRF()
     {
         $t = array();
         $t['__c'] = get_called_class();

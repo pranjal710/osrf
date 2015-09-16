@@ -51,7 +51,7 @@ class OsrfSession
     *
     * @return void
     */
-    function __construct($u="localhost")
+    public function __construct($u="localhost")
     {
         $this->server = $u;
         $this->fm_IDL = "/reports/fm_IDL.xml";
@@ -62,7 +62,7 @@ class OsrfSession
      *
      * @throws Exception
      */
-    function init()
+    public function init()
     {
         $this->checkhost();
         if ($this->checkhost() !== 200) {
@@ -84,7 +84,7 @@ class OsrfSession
     *
     * @throws Exception
     */
-    function login($username, $password)
+    public function login($username, $password)
     {
         try {
             $arr = array($username);
@@ -129,7 +129,7 @@ class OsrfSession
     *
     * @throws Exception
     */
-    function loadFieldmapper()
+    protected function loadFieldmapper()
     {
         $mapperFileName = $this->getFieldmapperFileName();
         if (!(file_exists($mapperFileName))) {
@@ -150,7 +150,7 @@ class OsrfSession
     *
     * @return int
     */
-    function checkhost()
+    public function checkhost()
     {
         $guzzleClient = new GuzzleHttp\Client([
             'base_url' => "http://" . $this->server,
@@ -176,7 +176,7 @@ class OsrfSession
      *
      * @throws Exception
      */
-    function simpleRequest($arr, $m, $s, $server)
+    public function simpleRequest($arr, $m, $s, $server)
     {
         //@todo this seems to be similar to OsrfMessage; combine?
         $endpoint = $server;
@@ -200,7 +200,7 @@ class OsrfSession
     *
     * @return object
     */
-    function request()
+    public function request()
     {
         $service = func_get_arg(0);
         $method = func_get_arg(1);
@@ -229,7 +229,7 @@ class OsrfSession
      *
      * @return string
      */
-    function objectsIntoArray($arrObjData, $arrSkipIndices = array())
+    protected function objectsIntoArray($arrObjData, $arrSkipIndices = array())
     {
         $arrData = array();
         if (is_object($arrObjData)) {
@@ -254,7 +254,7 @@ class OsrfSession
      *
      * @return string
      */
-    function getFieldmapperFileName()
+    protected function getFieldmapperFileName()
     {
         return sys_get_temp_dir().DIRECTORY_SEPARATOR."classfieldmapper-".$this->server.".php";
     }
@@ -265,7 +265,7 @@ class OsrfSession
      *
      * @return void
      */
-    function writeFieldmapper()
+    protected function writeFieldmapper()
     {
         //Loop through the contents of the IDL XML and assign to arrays of class and field
         $xmlUrl = "http://" . $this->server . $this->fm_IDL;
