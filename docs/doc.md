@@ -16,23 +16,6 @@ The PHP Binding for openSRF takes services, methods and data(also as parameter) 
 
 **Files**
 
-**methods.php**
-
-
-*function decodeFromOpenSRF($data)*
-
-Recursively turns an already decoded json object *i.e.* The parameter $data to fieldmapper object
-
-
-*function Parse_HTTP_response($string)*
-
-$string is a string which holds the HTTP response. The function returns an array, which is the parsed HTTP response.
-
-
-*function Stdclass_To_array($ar)*
-
-This takes one parameter *i.e.* $ar. $ar can be an array or an object. It returns an array by converting the object to an associative array.
-
 
 **FieldmapperClassAbstract.php**
 
@@ -59,6 +42,14 @@ constructor, getguid(), setguid(), toarray(),header(), send(),
 
 This class helps to parse the HTTP response. Each instance of this class holda a HTTP respomse in its 'data' property.
 
+*function decodeFromOpenSRF($data)*
+
+Recursively turns an already decoded json object *i.e.* The parameter $data to fieldmapper object
+
+
+*function Parse_HTTP_response($string)*
+
+$string is a string which holds the HTTP response. The function returns an array, which is the parsed HTTP response.
 
 **OsrfSession.php**
 

@@ -35,8 +35,9 @@ class OsrfMessage
     public $curl;
     public $server_result;
     public $endpoint;
+
     /**
-    * constructor
+    * Constructor.
     *
     * @param string $x method name
     *
@@ -63,6 +64,7 @@ class OsrfMessage
         $this->param = $y;
         $this->endpoint = $u;
     }
+
     /**
     * setter
     *
@@ -87,6 +89,7 @@ class OsrfMessage
         }
             $this->guid = $uuid;
     }
+
     /**
     * getter
     *
@@ -96,6 +99,7 @@ class OsrfMessage
     {
         return $this->guid;
     }
+
     /**
     * header
     *
@@ -109,7 +113,6 @@ class OsrfMessage
         return $this->header;
     }
 
-
     /**
     * toArray
     *
@@ -121,6 +124,7 @@ class OsrfMessage
     {
         return "osrf-msg=" . urlencode($data);
     }
+
     /**
     * Creates object to send
     *
@@ -149,10 +153,11 @@ class OsrfMessage
         $d = array($myobject);
         return json_encode($d);
     }
+
     /**
     * send
     *
-    * @return string
+    * @return object OsrfResponse
     */
     function send()
     {

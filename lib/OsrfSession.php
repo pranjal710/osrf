@@ -11,7 +11,6 @@
 * @link     https://www.github.com/pranjal710/
 */
 require_once 'OpenIlsSimpleRequest.php';
-require_once 'methods.php';
 require_once 'OsrfMessage.php';
 //require 'OpenIlsLogin.php';
 
@@ -28,10 +27,25 @@ use \GuzzleHttp\Client;
 */
 class OsrfSession
 {
-    public $server;
-    public $fm_IDL;
     /**
-    * constructor
+     * Server hosting the Evergreen instance to use.
+     *
+     * @var string
+     */
+    public $server;
+
+    /**
+     * Relative URL for the Fieldmapper Interface Description Language.
+     *
+     * This appears to expose some (but not all) services and methods;
+     * we create a Fieldmapper to be able to call these services in code.
+     *
+     * @var string
+     */
+    public $fm_IDL;
+
+    /**
+    * Constructor.
     *
     * @param string $u hostname
     *
@@ -42,8 +56,11 @@ class OsrfSession
         $this->server = $u;
         $this->fm_IDL = "/reports/fm_IDL.xml";
     }
+
     /**
-    * constructor
+    * Login (authenticate).
+    *
+    * See http://wiki.evergreen-ils.org/doku.php?id=mozilla-devel:birds_eye_view for some documentation on this.
     *
     * @param string $user username
     *
@@ -55,15 +72,18 @@ class OsrfSession
     {
         try {
             $arr = array($username);
-            $m = 'open-ils.auth.authenticate.init';
-            $s = 'open-ils.auth';
-            $seed = Open_Ils_Simple_request($arr, $m, $s, $this->server);
+            $seed = Open_Ils_Simple_request(
+                $arr,
+                'open-ils.auth.authenticate.init',
+                'open-ils.auth',
+                $this->server
+            );
             $password = md5($seed . md5($password));
             $arr = array(
-                    "username"=>$username,
-                    "password"=>$password,
-                    "type"=>"opac"
-                );
+                "username"=>$username,
+                "password"=>$password,
+                "type"=>"opac"
+            );
             $response1 = Open_Ils_Simple_request(
                 array($arr),
                 $m = 'open-ils.auth.authenticate.complete',
@@ -77,7 +97,6 @@ class OsrfSession
                 $msg = $login_response['textcode'] . ': ' . $login_response['desc'];
                 throw new Exception("Login Error for username '$username': $msg");
             }
-
         } catch (Exception $e) {
             $msg = $e->getMessage();
             throw new Exception("Login Error: $msg");
@@ -106,6 +125,7 @@ class OsrfSession
             return include $mapperFileName;
         }
     }
+
     /**
     * checkhost
     *
@@ -121,8 +141,11 @@ class OsrfSession
         /** $retcode = 400 -> not found, $retcode = 200, found. **/
         return $retcode;
     }
+
     /**
-    * request
+    * Helper method to make a generic OpenSRF request.
+    *
+    * @param mixed ... arbitrary parameters to include in the OpenSRF call
     *
     * @return object
     */
@@ -145,8 +168,9 @@ class OsrfSession
         $msg = new OsrfMessage($method, $service, $arr, $this->server);
         return $msg->send();
     }
+
     /**
-     * objectsIntoArray
+     * Helper method to parse objects into an array.
      *
      * @param array $arrObjData     array index
      *
@@ -173,8 +197,9 @@ class OsrfSession
         }
         return $arrData;
     }
+
     /**
-     * getFieldmapperFileName
+     * Get the location of the Fieldmapper file.
      *
      * @return string
      */
@@ -182,10 +207,10 @@ class OsrfSession
     {
         return sys_get_temp_dir().DIRECTORY_SEPARATOR."classfieldmapper-".$this->server.".php";
     }
+
     /**
-     * writeFieldmapper
      *
-     * Writes a new Fieldmapper file.
+     * Write a new Fieldmapper file.
      *
      * @return void
      */
