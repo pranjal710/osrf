@@ -189,8 +189,12 @@ class OsrfMessage
         foreach ($responseHeaders as $name => $values) {
             $returnResponse .= ucfirst(strtolower($name)).": " . implode(", ", $values) . "\n";
         }
-        $res = new OsrfResponse($returnResponse);
-        return $res;
+        $osrfResponse = new OsrfResponse($returnResponse);
+        $osrfResponse->rawRequest = array(
+            'headers' => $guzzleHeaders,
+            'body' => $guzzleQuery,
+        );
+        return $osrfResponse;
     }
 }
 ?>

@@ -29,6 +29,13 @@ class OsrfResponse
     public $raw;
 
     /**
+     * Raw OpenSRF request details, for makeshift troubleshooting.
+     *
+     * @var mixed
+     */
+    public $rawRequest;
+
+    /**
      * Parsed OpenSRF response.
      *
      * @var mixed
