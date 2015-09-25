@@ -1,4 +1,5 @@
 <?php
+namespace OpenSrf;
 /**
 * opensrf-php
 *
@@ -110,12 +111,12 @@ class OsrfResponse
             }
         }
         if ($problematicStatus) {
-            throw new Exception("Problematic STATUS(es) in osrfResponse: " . $problematicStatus);
+            throw new \Exception("Problematic STATUS(es) in osrfResponse: " . $problematicStatus);
         }
 
         switch (count($results)){
         case 0:
-            throw new Exception("No RESULT(s) in osrfMessage");
+            throw new \Exception("No RESULT(s) in osrfMessage");
         case 1:
             //Return our single RESULT
             return $results[0];
@@ -176,7 +177,7 @@ class OsrfResponse
         }
         //Re-create, then parse, the actual osrfMessage(s).
         if (!isset($headers['[{"__c"'])){
-            throw new Exception("did not get osrfMessage from network");
+            throw new \Exception("did not get osrfMessage from network");
         }
         $osrfMessage = '[{"__c":'.$headers['[{"__c"'];
         $osrfMessage = json_decode($osrfMessage, true);

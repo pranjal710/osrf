@@ -1,4 +1,5 @@
 <?php
+namespace OpenSrf;
 /**
 * opensrf-php
 *
@@ -10,11 +11,9 @@
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
 */
-require_once 'OsrfMessage.php';
-require_once 'OsrfResponse.php';
-//require 'OpenIlsLogin.php';
 
 use \GuzzleHttp\Client;
+use \OpenSrf\OsrfMessage;
 
 /**
 * OsrfSession
@@ -66,7 +65,7 @@ class OsrfSession
     {
         $this->checkhost();
         if ($this->checkhost() !== 200) {
-            throw new Exception("Could not open OSRF session");
+            throw new \Exception("Could not open OSRF session");
         }
         $this->loadFieldmapper();
     }
@@ -111,11 +110,11 @@ class OsrfSession
                 $value = $login_response['payload']['authtoken'];
             } else {
                 $msg = $login_response['textcode'] . ': ' . $login_response['desc'];
-                throw new Exception("Login Error for username '$username': $msg");
+                throw new \Exception("Login Error for username '$username': $msg");
             }
         } catch (Exception $e) {
             $msg = $e->getMessage();
-            throw new Exception("Login Error: $msg");
+            throw new \Exception("Login Error: $msg");
         }
         return $value;
     }
@@ -137,7 +136,7 @@ class OsrfSession
         }
         if (!(file_exists($mapperFileName))) {
             // Something went wrong; Fieldmapper should now exist.
-            throw new Exception(
+            throw new \Exception(
                 'Could not load Fieldmapper: ' . $mapperFileName
             );
         } else {
@@ -152,7 +151,7 @@ class OsrfSession
     */
     public function checkhost()
     {
-        $guzzleClient = new GuzzleHttp\Client([
+        $guzzleClient = new Client([
             'base_url' => "http://" . $this->server,
         ]);
         $guzzleResponse = $guzzleClient->get($this->fm_IDL);
@@ -189,7 +188,7 @@ class OsrfSession
         if ($response) {
             return $response->parse();
         } else {
-            throw new Exception('Service Unavailable');
+            throw new \Exception('Service Unavailable');
         }
     }
 
