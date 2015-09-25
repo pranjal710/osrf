@@ -1,4 +1,5 @@
 <?php
+namespace OpenSrf;
 /**
 * opensrf-php
 *
@@ -10,6 +11,8 @@
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
 */
+
+use \GuzzleHttp\Client;
 
 /**
 * OsrfMessage
@@ -33,40 +36,42 @@ class OsrfMessage
     public $curl;
     public $server_result;
     public $endpoint;
+
     /**
-    * constructor
+    * Constructor.
     *
-    * @param string $x method name
+    * @param string $method method name
     *
-    * @param string $z service name
+    * @param string $service service name
     *
-    * @param string $y parameter
+    * @param string $params parameter
     *
-    * @param string $u endpoint
+    * @param string $endpoint endpoint
     *
     * @return string
     */
-    function __construct($x, $z, $y, $u="opensrf")
+    public function __construct($method, $service, $params, $endpoint="opensrf")
     {
-        if (is_string($x)) {
-            $this->method = $x;
-        } elseif (is_object($x)) {
-            $this->method = $x;
+        if (is_string($method)) {
+            $this->method = $method;
+        } elseif (is_object($method)) {
+            $this->method = $method;
         }
-        if (is_string($z)) {
-            $this->service = $z;
-        } elseif (is_object($z)) {
-            $this->service = $z;
+        if (is_string($service)) {
+            $this->service = $service;
+        } elseif (is_object($service)) {
+            $this->service = $service;
         }
-        $this->param = $y;
-        $this->endpoint = $u;
+        $this->param = $params;
+        $this->endpoint = $endpoint;
     }
+
     /**
     * setter
     *
     * @return void
     */
-    function setGuid()
+    public function setGuid()
     {
         if (function_exists('com_create_guid')) {
             return com_create_guid();
@@ -81,33 +86,34 @@ class OsrfMessage
                     .substr($charid, 16, 4).$hyphen
                     .substr($charid, 20, 12)
                     .chr(125);// "}"
-            
+
         }
             $this->guid = $uuid;
     }
+
     /**
     * getter
     *
     * @return int
     */
-    function getGuid()
+    public function getGuid()
     {
         return $this->guid;
     }
+
     /**
     * header
     *
     * @return string
     */
-    function header()
+    public function header()
     {
         $this->setGuid();
-        $this->header = array($this->service, 
+        $this->header = array($this->service,
         time(), $this->getGuid());
         return $this->header;
     }
-    
-    
+
     /**
     * toArray
     *
@@ -115,10 +121,11 @@ class OsrfMessage
     *
     * @return string
     */
-    function toArray($data)
+    public function toArray($data)
     {
         return "osrf-msg=" . urlencode($data);
     }
+
     /**
     * Creates object to send
     *
@@ -128,56 +135,67 @@ class OsrfMessage
     *
     * @return string
     */
-    function urldata($method, $ar)
+    protected function urldata($method, $ar)
     {
-        $myobject3 = new stdClass;
+        $myobject3 = new \stdClass;
         $myobject3->method = $method;
         $myobject3->params = $ar;
-        $myobject2 = new stdClass;
+        $myobject2 = new \stdClass;
         $myobject2->__c = 'osrfMethod';
         $myobject2->__p = $myobject3;
-        $myobject0 = new stdClass;
+        $myobject0 = new \stdClass;
         $myobject0->threadTrace = 0;
         $myobject0->type = 'REQUEST';
         $myobject0->payload = $myobject2;
         $myobject0->locale = 'en-US';
-        $myobject = new stdClass;
+        $myobject = new \stdClass;
         $myobject->__c = 'osrfMessage';
         $myobject->__p = $myobject0;
         $d = array($myobject);
         return json_encode($d);
     }
+
     /**
     * send
     *
-    * @return string
+    * @return object OsrfResponse
     */
-    function send()
+    public function send()
     {
-        include_once 'HTTP/Request2.php';
         $endpoint = $this->endpoint;
         $data = $this->urldata($this->method, $this->param);
         $header = $this->header();
-        $url_post = 'http://'.$endpoint.'/osrf-http-translator';
-        $request = new HTTP_Request2();
-        $request->setUrl($url_post);
-        $request->setHeader(
+
+        $guzzleClient = new Client(
             array(
-                                    'X-OpenSRF-service' => $header[0], 
-                                    'X-OpenSRF-xid' => $header[1], 
-                                    'X-OpenSRF-thread' => $header[2])
+                'base_url' =>"http://" . $endpoint,
+            )
         );
-        $request->setMethod(HTTP_Request2::METHOD_POST);
-        $request->addPostParameter("osrf-msg", $data);
-        $response = $request->send(); 
-        $responseBody = $response->getBody();
-        $responseHeader=$response->getHeader();
+        $guzzleQuery = array("osrf-msg" => $data);
+        $guzzleHeaders = array(
+            'X-OpenSRF-service' => $header[0],
+            'X-OpenSRF-xid' => $header[1],
+            'X-OpenSRF-thread' => $header[2]
+        );
+        $guzzleResponse = $guzzleClient->post('/osrf-http-translator',
+            array(
+                'headers' => $guzzleHeaders,
+                'body' => $guzzleQuery,
+            )
+        );
+        $responseBody = $guzzleResponse->getBody();
+        $responseHeaders = $guzzleResponse->getHeaders();
+        //Use structure OsrfResponse expects.
         $returnResponse = $responseBody."\n";
-        foreach ($responseHeader as $key => $value) {
-            $returnResponse = $returnResponse.ucfirst($key).": $value\n";
+        foreach ($responseHeaders as $name => $values) {
+            $returnResponse .= ucfirst(strtolower($name)).": " . implode(", ", $values) . "\n";
         }
-        $res = new OsrfResponse($returnResponse);
-        return $res;
+        $osrfResponse = new OsrfResponse($returnResponse);
+        $osrfResponse->rawRequest = array(
+            'headers' => $guzzleHeaders,
+            'body' => $guzzleQuery,
+        );
+        return $osrfResponse;
     }
 }
 ?>

@@ -1,4 +1,5 @@
 <?php
+namespace OpenSrf;
 /**
 * opensrf-php
 *
@@ -10,11 +11,10 @@
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
 */
-require 'Config.php';
-require_once 'OpenIlsSimpleRequest.php';
-require_once 'methods.php';
-require_once 'OsrfMessage.php';
-//require 'OpenIlsLogin.php';
+
+use \GuzzleHttp\Client;
+use \OpenSrf\OsrfMessage;
+
 /**
 * OsrfSession
 *
@@ -26,118 +26,188 @@ require_once 'OsrfMessage.php';
 */
 class OsrfSession
 {
-    public $server;
-    public $fm_IDL;
     /**
-    * constructor
+     * Server hosting the Evergreen instance to use.
+     *
+     * @var string
+     */
+    public $server;
+
+    /**
+     * Relative URL for the Fieldmapper Interface Description Language.
+     *
+     * This appears to expose some (but not all) services and methods;
+     * we create a Fieldmapper to be able to call these services in code.
+     *
+     * @var string
+     */
+    public $fm_IDL;
+
+    /**
+    * Constructor.
     *
     * @param string $u hostname
     *
     * @return void
     */
-    function __construct($u="localhost") 
+    public function __construct($u="localhost")
     {
         $this->server = $u;
-        $this->fm_IDL = "http://".$u."/reports/fm_IDL.xml";
+        $this->fm_IDL = "/reports/fm_IDL.xml";
     }
+
     /**
-    * constructor
+     * Convenience method to initialise a session.
+     *
+     * @throws Exception
+     */
+    public function init()
+    {
+        $this->checkhost();
+        if ($this->checkhost() !== 200) {
+            throw new \Exception("Could not open OSRF session");
+        }
+        $this->loadFieldmapper();
+    }
+
+    /**
+    * Login (authenticate).
+    *
+    * See http://wiki.evergreen-ils.org/doku.php?id=mozilla-devel:birds_eye_view for some documentation on this.
     *
     * @param string $user username
     *
     * @param string $pass password
     *
     * @return string
+    *
+    * @throws Exception
     */
-    function login($user, $pass)
+    public function login($username, $password)
     {
         try {
             $arr = array($username);
-            $m = 'open-ils.auth.authenticate.init';
-            $s = 'open-ils.auth';  
-            try {
-                $seed = Open_Ils_Simple_request($arr, $m, $s, $server);
-            } catch (Exception $e0) {
-                echo 'Error: ',  $e0->getMessage(), "\n";
-            }
+            $seed = $this->simpleRequest(
+                $arr,
+                'open-ils.auth.authenticate.init',
+                'open-ils.auth',
+                $this->server
+            );
             $password = md5($seed . md5($password));
             $arr = array(
-                            "username"=>$username, 
-                            "password"=>$password, 
-                            "type"=>"opac"
-                        ); 
-            try {
-                    $response1 = Open_Ils_Simple_request(
-                        array($arr), 
-                        $m = 'open-ils.auth.authenticate.complete', 
-                        $s = 'open-ils.auth', 
-                        $server
-                    );
-            } catch (Exception $e1) {
-                echo 'Error: ',  $e1->getMessage(), "\n";
-            }
-    
+                "username"=>$username,
+                "password"=>$password,
+                "type"=>"opac"
+            );
+            $response1 = $this->simpleRequest(
+                array($arr),
+                $m = 'open-ils.auth.authenticate.complete',
+                $s = 'open-ils.auth',
+                $this->server
+            );
             $login_response = $response1;
             if ($login_response['ilsevent']=='0') {
                 $value = $login_response['payload']['authtoken'];
             } else {
-                throw new Exception('Login Error');
+                $msg = $login_response['textcode'] . ': ' . $login_response['desc'];
+                throw new \Exception("Login Error for username '$username': $msg");
             }
-
         } catch (Exception $e) {
-            echo 'Error: ',  $e->getMessage(), "<br />";
+            $msg = $e->getMessage();
+            throw new \Exception("Login Error: $msg");
         }
         return $value;
     }
+
     /**
-    * loadFieldmapper
+    * Load Fieldmapper.
     *
-    * @param string $option bool
+    * A temporary version is cached, for performance.
     *
     * @return void
+    *
+    * @throws Exception
     */
-    function loadFieldmapper($option)
+    protected function loadFieldmapper()
     {
-        if ($option == false) {
-            include "Fieldmapper.php";
+        $mapperFileName = $this->getFieldmapperFileName();
+        if (!(file_exists($mapperFileName))) {
+            $this->writeFieldmapper();
         }
-        if (!(file_exists(
-            PATH_TO_FIELDMAPPER."classfieldmapper-".$this->server.".php"
-        ))) {
-            throw new Exception(
-                'Could not locate ClassFieldmapper as described in config.php.'
+        if (!(file_exists($mapperFileName))) {
+            // Something went wrong; Fieldmapper should now exist.
+            throw new \Exception(
+                'Could not load Fieldmapper: ' . $mapperFileName
             );
         } else {
-            return include PATH_TO_FIELDMAPPER."classfieldmapper-"
-            .$this->server.".php";
+            return include_once $mapperFileName;
         }
     }
+
     /**
     * checkhost
     *
     * @return int
     */
-    function checkhost()
+    public function checkhost()
     {
-        include_once 'HTTP/Request2.php';
-        $request = new HTTP_Request2($this->fm_IDL, HTTP_Request2::METHOD_GET);
-        $response = $request->send();
-        $retcode = $response->getStatus();
+        $guzzleClient = new Client([
+            'base_url' => "http://" . $this->server,
+        ]);
+        $guzzleResponse = $guzzleClient->get($this->fm_IDL);
+        $retcode = $guzzleResponse->getStatusCode();
         /** $retcode = 400 -> not found, $retcode = 200, found. **/
         return $retcode;
     }
+
     /**
-    * request
+     * Helper method to make a simple OpenSRF request.
+     *
+     * @param array  $arr    parameters to pass to the method in an array
+     *
+     * @param string $m      method name
+     *
+     * @param string $s      service name
+     *
+     * @param string $server evergreen host
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    public function simpleRequest($arr, $m, $s, $server)
+    {
+        //@todo this seems to be similar to OsrfMessage; combine?
+        $endpoint = $server;
+        if ($endpoint) {
+            $a = new OsrfMessage($m, $s, $arr, $endpoint);
+        } else {
+            $a = new OsrfMessage($m, $s, $arr);
+        }
+        $response = $a->send();
+        if ($response) {
+            return $response->parse();
+        } else {
+            throw new \Exception('Service Unavailable');
+        }
+    }
+
+    /**
+    * Helper method to make a generic OpenSRF request.
+    *
+    * @param mixed ... arbitrary parameters to include in the OpenSRF call
     *
     * @return object
     */
-    function request()
+    public function request()
     {
-        $service = func_get_arg(0); 
+        $service = func_get_arg(0);
         $method = func_get_arg(1);
+        // Extract other parameters
+        $numargs = func_num_args();
         $arr = array();
         $k = 2;
-        while (func_get_arg($k) !== false) {
+        while ($k < $numargs && func_get_arg($k) !== false) {
             $add = func_get_arg($k);
             if (is_object($add)) {
                 $add = $add->encodeForOpenSRF();
@@ -147,6 +217,102 @@ class OsrfSession
         }
         $msg = new OsrfMessage($method, $service, $arr, $this->server);
         return $msg->send();
-    } 
+    }
+
+    /**
+     * Helper method to parse objects into an array.
+     *
+     * @param array $arrObjData     array index
+     *
+     * @param array $arrSkipIndices array index to skip
+     *
+     * @return string
+     */
+    protected function objectsIntoArray($arrObjData, $arrSkipIndices = array())
+    {
+        $arrData = array();
+        if (is_object($arrObjData)) {
+            $arrObjData = get_object_vars($arrObjData);
+        }
+        if (is_array($arrObjData)) {
+            foreach ($arrObjData as $index => $value) {
+                if (is_object($value) || is_array($value)) {
+                    $value = $this->objectsIntoArray($value, $arrSkipIndices);
+                }
+                if (in_array($index, $arrSkipIndices)) {
+                    continue;
+                }
+                $arrData[$index] = $value;
+            }
+        }
+        return $arrData;
+    }
+
+    /**
+     * Get the location of the Fieldmapper file.
+     *
+     * @return string
+     */
+    protected function getFieldmapperFileName()
+    {
+        return sys_get_temp_dir().DIRECTORY_SEPARATOR."classfieldmapper-".$this->server.".php";
+    }
+
+    /**
+     *
+     * Write a new Fieldmapper file.
+     *
+     * @return void
+     */
+    protected function writeFieldmapper()
+    {
+        //Loop through the contents of the IDL XML and assign to arrays of class and field
+        $xmlUrl = "http://" . $this->server . $this->fm_IDL;
+        $xmlStr = file_get_contents($xmlUrl);
+        $xmlObj = simplexml_load_string($xmlStr);
+        $arrXml = $this->objectsIntoArray($xmlObj);
+        $class = array();
+        $field = array();
+        foreach($arrXml['class'] as $i) {
+            $class[] = $i['@attributes']['id'];
+            $class_id = $i['@attributes']['id'];
+            $inner = null;
+            $field[$class_id] = array();
+            foreach($i['fields']['field'] as $j) {
+                if (isset($j['@attributes']['name']) && !is_null($j['@attributes']['name'])) {
+                    $field[$class_id][] = $j['@attributes']['name'];
+                }
+            }
+        }
+
+        //Create our Fieldmapper...
+        $myFile = $this->getFieldmapperFileName();
+        $fh = fopen($myFile, 'w') or die("can't open file");
+        $stringData = "<?php \n \n";
+        fwrite($fh, $stringData);
+        //Refer to a known file (assume location of library won't change).
+        $classFile = str_ireplace(__CLASS__, 'FieldmapperClassAbstract', __FILE__);
+        $stringData = "include (\"$classFile\"); \n \n";
+        fwrite($fh, $stringData);
+        //Write out our holding arrays as classes and fields
+        foreach($class as $i){
+            $stringData = "Class $i extends Fieldmapper_Class {\n";
+            $stringData .= "  protected \$_properties = array(\n";
+            fwrite($fh, $stringData);
+            $stringData = null;
+            foreach($field[$i] as $k => $v){
+                $stringData .= '    "'.$k.'" => \''.$v.'\','."\n";
+            }
+            $stringData = substr($stringData, 0, -2);
+            fwrite($fh, $stringData);
+            $stringData = "\n  );\n";
+            $stringData .= "}\n\n";
+            fwrite($fh, $stringData);
+        }
+        // Finish up.
+        $stringData = "?>";
+        fwrite($fh, $stringData);
+        fclose($fh);
+    }
 }
 ?>

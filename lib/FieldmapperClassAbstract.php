@@ -22,33 +22,30 @@
 abstract class Fieldmapper_Class
 {
     private $_values = array();
+
     /**
     * Setter Function
     *
-    * @param string $field Array key from classfieldapper
+    * @param string $field The property to assign; an array key from classfieldmapper
     *
     * @param string $value The value to assign
     *
     * @return void
     */
-    function __set($field, $value) 
-    { 
-        $flag = 1;
-        for ($x = 0 ; $this->_properties[$x] != null ; $x++) {
-            if ($this->_properties[$x] == $field) {
-                $this->_values[$field] = $value;
-                $flag = 2;
-            }
-        }
-        if ($flag == 1) {
+    public function __set($field, $value)
+    {
+        //Only set value if it is a known property.
+        if (in_array($field, $this->_properties)) {
+            $this->_values[$field] = $value;
+        } else {
             throw new Exception(
                 'fieldmapper class '.
-                get_called_class().' has no '.$field.' . 
+                get_called_class().' has no '.$field.' .
                 Invalid Field Parameter'
             );
         }
     }
-      
+
     /**
     * Getter Function
     *
@@ -56,7 +53,7 @@ abstract class Fieldmapper_Class
     *
     * @return string
     */
-    function __get($field) 
+    public function __get($field)
     {
         if ($field == "_properties") {
             return $this->$field;
@@ -80,8 +77,8 @@ abstract class Fieldmapper_Class
     *
     * @return array
     */
-    function encodeForOpenSRF() 
-    { 
+    public function encodeForOpenSRF()
+    {
         $t = array();
         $t['__c'] = get_called_class();
         $t['__p'] = array();

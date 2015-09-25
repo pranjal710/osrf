@@ -11,20 +11,29 @@ The PHP Binding for openSRF takes services, methods and data(also as parameter) 
 >Setting up an OpenSRF session will retrieve the fm_IDL.xml file from the targeted server, which provides that server's Interface Description Language.  This essentially means class definitions that allow certain data structures to be interpreted as objects in the Object-oriented sense.
 
 
-**Requirements:** *PHP version > 5 and HTTP_Request2*
-
+**Requirements:** *PHP version > 5 and Guzzle 5*
 
 
 **Files**
 
-**config.php**
 
-This is the main configuration page. It holds the Golbal Variable which define the full path to classfieldmapper file.
+**FieldmapperClassAbstract.php**
+
+It is an abstract class which holds the methods that is used by the numerous class of classfieldmapper.php
+
+*function encodeForOpenSRF()
+
+It recursively encodes an object to be send to opensrf.
+
+**OsrfMessage.php**
+
+This class is used in sending and retrieving messages to openSRF service. Its member functions are:
+constructor, getguid(), setguid(), toarray(),header(), send(),
 
 
+**OsrfResponse.php**
 
-**methods.php**
-
+This class helps to parse the HTTP response. Each instance of this class holda a HTTP respomse in its 'data' property.
 
 *function decodeFromOpenSRF($data)*
 
@@ -35,55 +44,20 @@ Recursively turns an already decoded json object *i.e.* The parameter $data to f
 
 $string is a string which holds the HTTP response. The function returns an array, which is the parsed HTTP response.
 
+**OsrfSession.php**
 
-*function Stdclass_To_array($ar)*
-
-This takes one parameter *i.e.* $ar. $ar can be an array or an object. It returns an array by converting the object to an associative array.
+This is that class, whose instance is used by the examples file, and it calls other functions.
 
 
-**Fieldmapper.php**
 
-*abstract class Fieldmapper_Class*
+*function loadFieldmapper
 
 Create/overwrites a dynamic file *i.e.* Classfieldmapper.php from parsed data obtained from fm_IDL (http://hostname/reports/fm_IDL.xml). Its member functions are getter, setter and encodeforopensrf().
-
-
-*Fieldmapper_Class::function encodeForOpenSRF()*
-
-It recursively encodes an object to be send to opensrf.
-
 
 *function objectsIntoArray($arrObjData, $arrSkipIndices = array())*
 
 It takes two parameters, one as an array object and the other parameter tells which index to miss. It is a generic function to parse an xml into an array
 
-
-**FieldmapperClassAbstract.php**
-
-It is an abstract class which holds the methods that is used by the numerous class of classfieldmapper.php
-
-
-**OpenIlsSimpleRequest.php**
-
-*function Open_Ils_Simple_request($arr, $m, $s, $server)*
-
-This is one of the most important function. It takes three parameters (method, service, and an array) as parameters. The array contains data to form the HTTP header. It returns a parsed response.
-
-
-**OsrfMessage.php**
-
-This class is used in sending and retrieving messages to openSRF service. Its member functions are:
-constructor, getguid(), setguid(), toarray(),header(), send(), 
-
-
-**OsrfResponse.php**
-
-This class helps to parse the HTTP response. Each instance of this class holda a HTTP respomse in its 'data' property. 
-
-
-**OsrfSession.php**
-
-This is that class, whose instance is used by the examples file, and it calls other functions.
 
 
 
@@ -92,7 +66,7 @@ This is that class, whose instance is used by the examples file, and it calls ot
 
 *Open_Ils_Simple_request()* present in *OpenIlsSimpleRequest.php* mainly manages the process. it creates an instance of *osrfMessage Class* and then parses it through another instance of *osrfResponse Class* and its member functions.
 
-An instance of *Class osrfMessage* is used to interact with openSRF service. method, service, endpoint and param are set by the *constructor*. *setGuid()* sets the guid so that an HTTP header can be formed, and it can also help in creating a stateful session when required. With the information gathered a HTTP header is created by *function header()*. *Function toArray()* creates $data which will be used by the HTTP_REQUEST2 class. *function send()* uses HTTP_REQUEST2 to interact with openSRF. If successfull, it returns a response. 
+An instance of *Class osrfMessage* is used to interact with openSRF service. method, service, endpoint and param are set by the *constructor*. *setGuid()* sets the guid so that an HTTP header can be formed, and it can also help in creating a stateful session when required. With the information gathered a HTTP header is created by *function header()*. *Function toArray()* creates $data which will be used in the HTTP request. *function send()* sends the HTTP request to interact with openSRF. If successfull, it returns a response.
 
 HTTP response has to be parsed to get the desired result. The result is a json encoded string. For this purpose *Class osrfResponse* is present. *Function send()* initializes $data property of an instance of *Class osrfMessage*. The *function parse()* is then used to parse the generic HTTP response to get the desired output and returns it.
 
