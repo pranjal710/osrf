@@ -120,33 +120,6 @@ class OsrfSession
     }
 
     /**
-    * Load Fieldmapper.
-    *
-    * The Fieldmapper is actually a temporary file that is auto-generated;
-    * therefore we check it exists and then include_once it,
-    * rather than add it to an autoloading definition.
-    *
-    * @return void
-    *
-    * @throws Exception
-    */
-    protected function loadFieldmapper()
-    {
-        $mapperFileName = $this->getFieldmapperFileName();
-        if (!(file_exists($mapperFileName))) {
-            $this->writeFieldmapper();
-        }
-        if (!(file_exists($mapperFileName))) {
-            // Something went wrong; Fieldmapper should now exist.
-            throw new \Exception(
-                'Could not load Fieldmapper: ' . $mapperFileName
-            );
-        } else {
-            include_once $mapperFileName;
-        }
-    }
-
-    /**
     * checkhost
     *
     * @return int
@@ -251,6 +224,46 @@ class OsrfSession
     }
 
     /**
+     * Load Fieldmapper.
+     *
+     * The Fieldmapper is actually a temporary file that is auto-generated;
+     * therefore we check it exists and then include_once it,
+     * rather than add it to an autoloading definition.
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    public function loadFieldmapper()
+    {
+    	$mapperFileName = $this->getFieldmapperFileName();
+    	if (!(file_exists($mapperFileName))) {
+    		$this->writeFieldmapper();
+    	}
+    	if (!(file_exists($mapperFileName))) {
+    		// Something went wrong; Fieldmapper should now exist.
+    		throw new \Exception(
+    				'Could not load Fieldmapper: ' . $mapperFileName
+    		);
+    	} else {
+    		include_once $mapperFileName;
+    	}
+    }
+
+    /**
+     * Delete our Fieldmapper file.
+     *
+     * @return void
+     */
+    public function clearFieldmapper()
+    {
+        $mapperFileName = $this->getFieldmapperFileName();
+        if (file_exists($mapperFileName)) {
+           unlink($mapperFileName);
+        }
+    }
+
+    /**
      * Get the location of the Fieldmapper file.
      *
      * @return string
@@ -259,6 +272,8 @@ class OsrfSession
     {
         return sys_get_temp_dir() . DIRECTORY_SEPARATOR . "Fieldmapper-" . $this->server . ".php";
     }
+
+
 
     /**
      *

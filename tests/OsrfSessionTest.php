@@ -2,6 +2,7 @@
 namespace OpenSrf\Tests;
 
 use \OpenSrf\OsrfSession;
+use \OpenSrf\OsrfFieldmapper;
 
 /**
 * OsrfSessionTest
@@ -17,11 +18,40 @@ class OsrfSessionTest extends \PHPUnit_Framework_TestCase
      *
      * @var string
      */
-    public $testServer = 'http://demo.evergreencatalog.com';
+    public $testServer = 'demo.evergreencatalog.com';
+
+    /**
+     * Session instance.
+     */
+    public $osrfSession;
+
+    public function setup()
+    {
+        $this->osrfSession = new OsrfSession($this->testServer);
+    }
 
     public function testConstruct()
     {
-        $session = new OsrfSession($this->testServer);
-        $this->assertEquals($this->testServer, $session->server);
+        $this->assertEquals($this->testServer, $this->osrfSession->server);
+    }
+
+    public function testCheckhost()
+    {
+        $this->assertEquals(
+            200,
+            $this->osrfSession->checkhost(),
+            'demo Evergreen server may be unavailable'
+        );
+    }
+
+    public function testFieldMapper()
+    {
+        //Clear and re-generate fieldMapper.
+        $this->osrfSession->clearFieldmapper();
+        //An exception is thrown on failure.
+        $this->osrfSession->loadFieldmapper();
+        //Verify Fieldmapper contents are sane, with an auto-generated class
+        $foo = new \Opensrf\mups();
+        $this->assertInstanceOf('\Opensrf\OsrfFieldmapper', $foo);
     }
 }
