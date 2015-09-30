@@ -13,8 +13,9 @@ While this client aims to hide technical details, developers are encouraged to b
 **TODO** link to known OpenSRF calls / documentation
 
 ## Requirements
-PHP version > 5
-Guzzle 5
+PHP 5.4 and up.
+For specific supported versions, see [.travis.yml](.travis.yml).
+For dependencies, see [composer.json](composer.json).
 
 ## Installation
 This client uses Composer (with namespaces and PSR-4 autoloading). It isn't on Packagist yet.
