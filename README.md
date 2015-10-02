@@ -1,16 +1,24 @@
 **openSRF**
 ==================================
-PHP client for [openSRF](http://docs.evergreen-ils.org/2.9/_introducing_opensrf.html), a [message passing architecture](http://en.wikipedia.org/wiki/Message_passing#Message_passing_systems) used by the [Evergreen Integrated Library System (ILS)](http://evergreen-ils.org).
+PHP client for [openSRF](http://docs.evergreen-ils.org/2.9/_introducing_opensrf.html),
+a [message passing architecture](http://en.wikipedia.org/wiki/Message_passing#Message_passing_systems)
+used by the [Evergreen Integrated Library System (ILS)](http://evergreen-ils.org)
+and supported by [Equinox Software](https://esilibrary.com/).
 
 
 ## About OpenSRF
 
-While this client aims to hide technical details, developers are encouraged to be familiar with the internals of OpenSRF before working with it:
+OpenSRF is a protocol intended for low-level business logic, passed between Evergreen components.
+For higher-abstraction operations such as information retrieval,
+Evergreen's support of [OpenSearch](http://www.opensearch.org) and [unAPI](https://web.archive.org/web/20141218062835/http://unapi.info/) are recommended instead.
+
+This client aims to hide some implementation details, however developers are encouraged to be familiar with the internals of OpenSRF:
 
 * The ["Easing gently into the OpenSRF"](http://docs.evergreen-ils.org/2.9/_easing_gently_into_opensrf.html) chapter of the Evergreen documentation
-* There is also an [http://journal.code4lib.org/articles/3284](article by Dan Scott) ; partially superseded by the above but still of interest.
-
-**TODO** link to known OpenSRF calls / documentation
+* Also, the Evergreen codebase contains OpenSRF call declarations;
+ examples include [config.js](https://github.com/evergreen-library-system/Evergreen/blob/master/Open-ILS/web/opac/common/js/config.js)
+ and [perlmod](https://github.com/evergreen-library-system/Evergreen/tree/master/Open-ILS/src/perlmods/lib/OpenILS/Application).
+* There is also an [http://journal.code4lib.org/articles/3284](article by Dan Scott); partially superseded by the above but still of interest.
 
 ## Requirements
 PHP 5.4 and up.
