@@ -1,4 +1,5 @@
 <?php
+namespace OpenSrf;
 /**
 * opensrf-php
 *
@@ -19,7 +20,7 @@
 * @license  http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License
 * @link     https://www.github.com/pranjal710/
 */
-abstract class Fieldmapper_Class
+abstract class OsrfFieldmapper
 {
     private $_values = array();
 
