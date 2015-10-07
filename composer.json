@@ -1,0 +1,20 @@
+{
+	"require" : {
+		"guzzlehttp/guzzle" : "~5.2"
+	},
+	"name" : "OpenSRF PHP Client",
+	"description" : "Client for the Open Service Request Framework (openSRF), used with Evergreen, an open source Integrated Library System (ILS)",
+	"keywords" : [
+		"openSRF",
+		"evergreen"
+	],
+	"autoload" : {
+		"psr-4" : {
+			"OpenSrf\\" : "lib/"
+		}
+	},
+	"minimum-stability" : "stable",
+	"require-dev" : {
+		"phpunit/phpunit" : "~4.8"
+	}
+}

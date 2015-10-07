@@ -1,34 +1,59 @@
-**openSRF** 
+**openSRF**
 ==================================
-openSRF is a message passing architecture. We have many message passing systems today. While browsing a bit over the internet I came across some, a few listed here *http://en.wikipedia.org/wiki/Message_passing#Message_passing_systems*. So why do we have this new message passing thing? It is basically to interact with **Evergreen, an open source Integrated Library System (ILS)**. 
-
-While a complete guide to openSRF can be found at *http://journal.code4lib.org/articles/3284*, here is a quick intro to openSRF. 
->The Open Service Request Framework (or OpenSRF, pronounced “open surf”) is an inter-application message passing architecture built on XMPP (aka “jabber”). The Evergreen open source library system is built on an OpenSRF architecture to support loosely coupled individual components communicating over an OpenSRF messaging bus. This article introduces OpenSRF, demonstrates how to build OpenSRF services through simple code examples, explains the technical foundations on which OpenSRF is built, and evaluates OpenSRF’s value in the context of Evergreen. Part 1 of a 2 part article in this issue.
-
- By Dan Scott
- 
- 
-Imagine an application architecture in which 10 lines of Perl or Python, using the data types native to each language, are enough to implement a method that can then be deployed and invoked seamlessly across hundreds of servers. You have just imagined developing with OpenSRF – it is truly that simple. Under the covers, of course, the OpenSRF language bindings do an incredible amount of work on behalf of the developer. An OpenSRF application consists of one or more OpenSRF services that expose methods: for example, the opensrf.simple-text demonstration service exposes the opensrf.simple-text.split() and opensrf.simple-text.reverse() methods. Each method accepts zero or more arguments and returns zero or one results. The data types supported by OpenSRF arguments and results are typical core language data types: strings, numbers, booleans, arrays, and hashes.
-
-*(source : http://docs.evergreen-ils.org/1.6/draft/html/writing_an_opensrf_service.html)*
+PHP client for [openSRF](http://docs.evergreen-ils.org/2.9/_introducing_opensrf.html),
+a [message passing architecture](http://en.wikipedia.org/wiki/Message_passing#Message_passing_systems)
+used by the [Evergreen Integrated Library System (ILS)](http://evergreen-ils.org)
+and supported by [Equinox Software](https://esilibrary.com/).
 
 
-Introduction 
--------------
-*(extracted from **http://journal.code4lib.org/articles/3284**)*
+## About OpenSRF
 
-OpenSRF is a message routing network that offers scalability and failover support for individual services and entire servers with minimal development and deployment overhead. You can use OpenSRF to build loosely-coupled applications that can be deployed on a single server or on clusters of geographically distributed servers using the same code and minimal configuration changes. Although copyright statements on some of the OpenSRF code date back to Mike Rylander’s original explorations in 2000, Evergreen was the first major application to be developed with, and to take full advantage of, the OpenSRF architecture starting in 2004. The first official release of OpenSRF was 0.1 in February 2005 (http://evergreen-ils.org/blog/?p=21), but OpenSRF’s development continues a steady pace of enhancement and refinement, with the release of 1.0.0 in October 2008 and the most recent release of 1.2.2 in February 2010.
+OpenSRF is a protocol intended for low-level business logic, passed between Evergreen components.
+For higher-abstraction operations such as information retrieval,
+Evergreen's support of [OpenSearch](http://www.opensearch.org) and [unAPI](https://web.archive.org/web/20141218062835/http://unapi.info/) are recommended instead.
 
-OpenSRF is a distinct break from the architectural approach used by previous library systems and has more in common with modern Web applications. The traditional “scale-up” approach to serve more transactions is to purchase a server with more CPUs and more RAM, possibly splitting the load between a Web server, a database server, and a business logic server. Evergreen, however, is built on the Open Service Request Framework (OpenSRF) architecture, which firmly embraces the “scale-out” approach of spreading transaction load over cheap commodity servers. The initial GPLS PINES hardware cluster, while certainly impressive, may have offered the misleading impression that Evergreen requires a lot of hardware to run. However, Evergreen and OpenSRF easily scale down to a single server; many Evergreen libraries run their entire library system on a single server, and most OpenSRF and Evergreen development occurs on a virtual machine running on a single laptop or desktop image.
+This client aims to hide some implementation details, however developers are encouraged to be familiar with the internals of OpenSRF:
 
-Library
--------
+* The ["Easing gently into the OpenSRF"](http://docs.evergreen-ils.org/2.9/_easing_gently_into_opensrf.html) chapter of the Evergreen documentation
+* Also, the Evergreen codebase contains OpenSRF call declarations;
+ examples include [config.js](https://github.com/evergreen-library-system/Evergreen/blob/master/Open-ILS/web/opac/common/js/config.js)
+ and [perlmod](https://github.com/evergreen-library-system/Evergreen/tree/master/Open-ILS/src/perlmods/lib/OpenILS/Application).
+* There is also an [http://journal.code4lib.org/articles/3284](article by Dan Scott); partially superseded by the above but still of interest.
 
-The working of this library is explained in *pranjal710/osrf/docs/* directory
+## Requirements
+PHP 5.4 and up.
+For specific supported versions, see [.travis.yml](.travis.yml).
+For dependencies, see [composer.json](composer.json).
 
-Testing 
---------
+## Installation
+This client uses Composer (with namespaces and PSR-4 autoloading). It isn't on Packagist yet.
 
+## Usage
+
+The client takes services, methods and data (also as parameter) to make requests and receive responses from OpenSRF services, and return a simple parsed output.
+Setting up an OpenSRF session will retrieve the fm_IDL.xml file from the targeted server, which provides that server's Interface Description Language.
+This essentially means class definitions that allow certain data structures to be interpreted as objects in the Object-oriented sense.
+Examples of some typical usage are under the examples/ directory.
+
+### Internals Overview
+
+* *OrsfSession* represents a session with a specific Evergreen server.
+* On initialisation, it collaborates with *OsrfFieldmapper* to get the *Interface Description Language* from the server
+ (the fm_IDL.xml file) and write field mappings in a temporary file.
+* This is then used to interpret requests and responses for that specific server.
+* Making an OpenSRF request involves calling osrfSession::request(), with suitable parameters; this is usually a
+ combination of method, service, endpoint and other paramaters and will vary depending on the exact call.
+* This creates an instance of *osrfMessage*, which constructs and sends both the message and the JSON payload via osrfMessage::send().
+* Internally, osrfMessage::setGuid() and osrfMessage::header() supports stateful sessions.
+* The raw JSON response is held, unsurprisingly, in an instance of *osrfResponse*, where it is also parsed to be more useful.
+* User authentication requests are supported via osrfSession::login(); when working with multiple users,
+ please use multiple osrfSession instances (though at time of writing the authtoken is not used).
+
+For more information about specific functionality, see the documentation in each class.
+
+## Troubleshooting
+
+### Testing
 There are test servers freely available, which can be used to test the code. Test servers can be found at *http://open-ils.org/dokuwiki/doku.php?id=community_servers*
 
 If you still have any questions or doubts, you are free to talk to **Evergreen, an open source Integrated Library System (ILS)** ( *IRC: #evergreen channel on the Freenode server* HomePage: *http://evergreen-ils.org/* )
